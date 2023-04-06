@@ -1,0 +1,31 @@
+
+.bg-img {
+    width: 100%;
+    position: absolute;
+    filter: blur(4px);
+}
+
+.front-line {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    color: rgb(255, 254, 254);
+    font-size: 4rem;
+    padding: 15px;
+    font-family: "Montserrat";
+    font-weight: 400;
+    margin-top: 8%;
+}
+
+.sub-line {
+    position: absolute;
+    margin-top: 17%;
+    margin-left: 0.5%;
+    top: 20%;
+    left: 10%;
+    color: rgb(254, 252, 252);
+    font-size: 1rem;
+    padding: 15px;
+    font-family: "Montserrat";
+    font-weight: 100;
+}
