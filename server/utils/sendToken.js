@@ -1,4 +1,10 @@
-export const sendToken = (res, user, message, statusCode = 200) => {
+export const sendToken = (
+    res,
+    organisation,
+    user,
+    message,
+    statusCode = 200
+) => {
     const token = user.getJwtToken();
 
     const options = {
@@ -11,6 +17,7 @@ export const sendToken = (res, user, message, statusCode = 200) => {
     res.status(statusCode).cookie("token", token, options).json({
         success: true,
         message,
+        organisation,
         user,
     });
 };
