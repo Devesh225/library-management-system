@@ -17,7 +17,9 @@ export const razorpayInstance = new Razorpay({
 });
 
 app.get("/", (req, res) => {
-    res.send("<h1>SERVER IS WORKING</h1>");
+    res.send(
+        `<h1>SERVER IS WORKING, CLICK TO VIEW: <a href=${process.env.FRONTEND_URL}>FRONTEND</a></h1>`
+    );
 });
 
 app.listen(process.env.PORT, () => {
