@@ -8,12 +8,16 @@ connectDB();
 cloudinary.v2.config({
     cloud_name: process.env.CLOUDINARY_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 export const razorpayInstance = new Razorpay({
     key_id: process.env.RAZORPAY_API_KEY,
-    key_secret: process.env.RAZORPAY_API_SECRET
+    key_secret: process.env.RAZORPAY_API_SECRET,
+});
+
+app.get("/", (req, res) => {
+    res.sendStatus(200);
 });
 
 app.listen(process.env.PORT, () => {
