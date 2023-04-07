@@ -5,7 +5,13 @@ export const sendToken = (
     message,
     statusCode = 200
 ) => {
-    const token = user.getJwtToken();
+    let token = null;
+
+    if (organisation) {
+        token = organisation.getJwtToken();
+    } else {
+        token = user.getJwtToken();
+    }
 
     const options = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 DAYS
