@@ -14,10 +14,17 @@ export const sendToken = (
         sameSite: "none",
     };
 
-    res.status(statusCode).cookie("token", token, options).json({
-        success: true,
-        message,
-        organisation,
-        user,
-    });
+    if (organisation) {
+        res.status(statusCode).cookie("token", token, options).json({
+            success: true,
+            message,
+            organisation,
+        });
+    } else {
+        res.status(statusCode).cookie("token", token, options).json({
+            success: true,
+            message,
+            user,
+        });
+    }
 };

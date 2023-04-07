@@ -1,9 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { organisationReducer } from './reducers/organisationReducer';
 
-// const server =
+export const server = 'https://libraly-app.vercel.app/api/v1';
 
-// const store = configureStore({
-//   reducer: {},
-// });
+const store = configureStore({
+  reducer: {
+    organisation: organisationReducer,
+  },
+});
 
 export default store;
