@@ -16,10 +16,6 @@ export const razorpayInstance = new Razorpay({
     key_secret: process.env.RAZORPAY_API_SECRET,
 });
 
-app.get("/", (req, res) => {
-    res.sendStatus(200);
-});
-
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port: ${process.env.PORT}`);
 });
