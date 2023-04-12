@@ -11,7 +11,6 @@ export const organisationLogin = (id, password) => async dispatch => {
       {
         headers: { 'Content-type': 'application/json' },
         withCredentials: true,
-        credentials: true,
       }
     );
 
