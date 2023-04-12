@@ -7,10 +7,37 @@ import RegisterOrg from './components/RegisterOrg';
 import RegisterUser from './components/RegisterUser';
 import LoginOrg from './components/LoginOrg';
 import LoginUser from './components/LoginUser';
+import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { organisationLoadUser } from './redux/actions/organisationAction';
+import ResponsiveAppBar from './components/ResponsiveAppBar';
 
 function App() {
+  const { isAuthenticated, organisation, error, message } = useSelector(
+    state => state.organisation
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearError' });
+    }
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
+  }, [dispatch, error, message]);
+
+  useEffect(() => {
+    dispatch(organisationLoadUser());
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
+      <ResponsiveAppBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -20,6 +47,7 @@ function App() {
         <Route path="/userregister" element={<RegisterUser />} />
         <Route path="/userlogin" element={<LoginUser />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }

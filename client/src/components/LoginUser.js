@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ResponsiveAppBar from './ResponsiveAppBar';
 import './Register.css';
 
 function Copyright(props) {
@@ -46,7 +45,6 @@ const theme = createTheme({
 const LoginUser = () => {
   return (
     <div className="register__main">
-      <ResponsiveAppBar />
       <div className="signup-container">
         <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
@@ -126,14 +124,14 @@ const LoginUser = () => {
                 </Button>
                 <Grid container justifyContent="flex-end">
                   <Grid item sx={{ mb: 'none' }}>
-                    <Link href="/login" variant="body2">
+                    <Link href="/userregister" variant="body2">
                       Not registered yet? Sign up
                     </Link>
                   </Grid>
                 </Grid>
               </Box>
             </Box>
-            <Copyright sx={{ mt: 5, mb: 2, color: 'primary.main' }} />
+            <Copyright sx={{ mt: 5, mb: 2, pb: 5, color: 'primary.main' }} />
           </Container>
         </ThemeProvider>
       </div>

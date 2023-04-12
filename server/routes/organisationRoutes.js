@@ -4,6 +4,7 @@ import {
     createOrganisationAdmin,
     deleteOrganisationAdmin,
     getAllOrganisationsAdmin,
+    getOrganisationProfile,
     getSingleMemberDetails,
     organisationForgotPasswordAdmin,
     organisationLogin,
@@ -22,6 +23,7 @@ const router = express.Router();
 router
     .route("/organisation/all")
     .get(isAuthenticated, getAllOrganisationsAdmin);
+router.route("/organisation/me").get(getOrganisationProfile);
 router
     .route("/member/add")
     .post(

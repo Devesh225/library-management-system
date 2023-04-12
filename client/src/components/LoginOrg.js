@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Register.css';
-import ResponsiveAppBar from './ResponsiveAppBar';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { organisationLogin } from '../redux/actions/organisationAction';
@@ -58,7 +57,6 @@ const LoginOrg = () => {
 
   return (
     <div className="register__main">
-      <ResponsiveAppBar />
       <div className="signup-container">
         <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
@@ -133,14 +131,26 @@ const LoginOrg = () => {
                 </Button>
                 <Grid container justifyContent="flex-end">
                   <Grid item sx={{ mb: 'none' }}>
-                    <Link href="/login" variant="body2">
+                    <Link href="/organisationregister" variant="body2">
                       Not registered yet? Sign up
+                    </Link>
+                  </Grid>
+                </Grid>
+                <Grid
+                  sx={{
+                    textAlign: 'center',
+                    marginTop: '1rem',
+                  }}
+                >
+                  <Grid item sx={{ mb: 'none' }}>
+                    <Link href="/userlogin" variant="body2">
+                      Not An Organisation? User Login.
                     </Link>
                   </Grid>
                 </Grid>
               </Box>
             </Box>
-            <Copyright sx={{ mt: 5, mb: 2, color: 'primary.main' }} />
+            <Copyright sx={{ mt: 5, mb: 2, pb: 5, color: 'primary.main' }} />
           </Container>
         </ThemeProvider>
       </div>

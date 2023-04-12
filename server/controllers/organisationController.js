@@ -16,6 +16,18 @@ export const getAllOrganisationsAdmin = catchAsyncError(
     }
 );
 
+export const getOrganisationProfile = catchAsyncError(
+    async (req, res, next) => {
+        const organisation = await organisationModel.findById(
+            req.organisation._id
+        );
+        res.status(200).json({
+            success: true,
+            organisation,
+        });
+    }
+);
+
 // CHECK AND TEST THIS CONTROLLER WHEN YOU RETURN
 export const createOrganisationAdmin = catchAsyncError(
     async (req, res, next) => {
