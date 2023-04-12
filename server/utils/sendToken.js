@@ -17,7 +17,7 @@ export const sendToken = (
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 DAYS
         httpOnly: true,
         secure: true,
-        // sameSite: "none",
+        sameSite: "none",
     };
 
     if (organisation) {
