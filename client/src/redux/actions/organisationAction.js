@@ -10,6 +10,8 @@ export const organisationLogin = (id, password) => async dispatch => {
       { id, password },
       {
         headers: { 'Content-type': 'application/json' },
+        withCredentials: true,
+        credentials: true,
       }
     );
 
@@ -25,6 +27,7 @@ export const organisationRegister = formData => async dispatch => {
 
     const { data } = await axios.post(`${server}/organisation/new`, formData, {
       headers: { 'Content-type': 'multipart/form-data' },
+      withCredentials: true,
     });
 
     console.log(data);
@@ -39,7 +42,9 @@ export const organisationLoadUser = () => async dispatch => {
   try {
     dispatch({ type: 'loadUserRequest' });
 
-    const { data } = await axios.get(`${server}/organisation/me`, {});
+    const { data } = await axios.get(`${server}/organisation/me`, {
+      withCredentials: true,
+    });
 
     console.log(data);
 

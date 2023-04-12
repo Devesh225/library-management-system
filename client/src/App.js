@@ -32,8 +32,10 @@ function App() {
   }, [dispatch, error, message]);
 
   useEffect(() => {
-    dispatch(organisationLoadUser());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      dispatch(organisationLoadUser());
+    }
+  }, [dispatch, isAuthenticated]);
 
   return (
     <BrowserRouter>

@@ -18,6 +18,7 @@ export const getAllOrganisationsAdmin = catchAsyncError(
 
 export const getOrganisationProfile = catchAsyncError(
     async (req, res, next) => {
+        console.log(req.organisation);
         const organisation = await organisationModel.findById(
             req.organisation._id
         );
