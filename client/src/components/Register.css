@@ -1,7 +1,9 @@
 .register__main {
     background-image: url("../assets/bg-signup.jpg");
     backdrop-filter: blur(3px);
-    height: 120vh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
   }
   
   .signup-container {
@@ -10,7 +12,7 @@
     border-radius: 30px;
     background-image: url("../assets/bg-signup-form.jpg");
   }
-  
+
   .signup-input {
     background-color: #ffffff;
     border-radius: 15px;

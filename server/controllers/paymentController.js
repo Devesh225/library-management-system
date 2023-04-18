@@ -3,10 +3,23 @@ import { organisationModel } from "../models/organisationModel.js";
 import { razorpayInstance } from "../server.js";
 import crypto from "crypto";
 import { paymentModel } from "../models/paymentModel.js";
+import ErrorHandler from "../utils/errorHandler.js";
 
-export const createSubscription = catchAsyncError(async(req, res, next) => {
+export const createSubscription = catchAsyncError(async (req, res, next) => {
     const organisation = await organisationModel.findById(req.organisation._id);
-    const planID = process.env.PLAN_ID;
+    let planID = null;
+    const { plan } = req.body;
+
+    if (plan === "Basic") {
+        planID = process.env.PLAN_BASIC_ID;
+    } else if (plan === "Pro") {
+        planID = process.env.PLAN_PRO_ID;
+    } else if (plan === "Premium") {
+        planID = process.env.PLAN_PREMIUM_ID;
+    } else {
+        return next(new ErrorHandler("NO PLAN SELECTED, TRY AGAIN.", 400));
+    }
+
     const subscription = await razorpayInstance.subscriptions.create({
         plan_id: planID,
         customer_notify: 1,
@@ -20,57 +33,69 @@ export const createSubscription = catchAsyncError(async(req, res, next) => {
 
     res.status(201).json({
         success: true,
-        subscriptionID: subscription.id
+        message: "SUBSCRIPTION CREATED SUCCESSFULLY.",
+        subscriptionID: subscription.id,
     });
 });
 
-export const paymentVerification = catchAsyncError(async(req, res, next) => {
-    const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body;
+export const paymentVerification = catchAsyncError(async (req, res, next) => {
+    const {
+        razorpay_payment_id,
+        razorpay_subscription_id,
+        razorpay_signature,
+    } = req.body;
     const organisation = await organisationModel.findById(req.organisation._id);
 
     const subscription_id = organisation.organisation_subscription.id;
 
-    const generated_signature = crypto.createHmac("sha256", process.env.RAZORPAY_API_SECRET).update(razorpay_payment_id + '|' + subscription_id, "utf-8").digest("hex");
+    const generated_signature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_API_SECRET)
+        .update(razorpay_payment_id + "|" + subscription_id, "utf-8")
+        .digest("hex");
 
     const isAuthenticSignature = generated_signature === razorpay_signature;
 
-    if(!isAuthenticSignature) {
+    if (!isAuthenticSignature) {
         return res.redirect(`${process.env.FRONTEND_URL}/paymentfailed`);
     }
 
     await paymentModel.create({
         razorpay_payment_id,
         razorpay_subscription_id,
-        razorpay_signature
+        razorpay_signature,
     });
 
     organisation.organisation_subscription.status = "active";
 
     await organisation.save();
 
-    res.redirect(`${process.env.FRONTEND_URL}/paymentsuccessful?reference=${razorpay_payment_id}`);
+    res.redirect(
+        `${process.env.FRONTEND_URL}/paymentsuccessful?reference=${razorpay_payment_id}`
+    );
 });
 
-export const getRazorpayKey = catchAsyncError(async(req, res, next) => {
+export const getRazorpayKey = catchAsyncError(async (req, res, next) => {
     res.status(200).json({
         success: true,
-        key: process.env.RAZORPAY_API_KEY
+        key: process.env.RAZORPAY_API_KEY,
     });
 });
 
-export const cancelSubscription = catchAsyncError(async(req, res,next) => {
+export const cancelSubscription = catchAsyncError(async (req, res, next) => {
     const organisation = await organisationModel.findById(req.organisation._id);
     const subscriptionID = organisation.organisation_subscription.id;
     let refund = false;
     await razorpayInstance.subscriptions.cancel(subscriptionID);
 
-    const payment = await paymentModel.findOne({razorpay_subscription_id: subscriptionID});
+    const payment = await paymentModel.findOne({
+        razorpay_subscription_id: subscriptionID,
+    });
 
     const timeGap = Date.now() - payment.createdAt;
 
     const refundTime = process.env.REFUND_DAYS * 24 * 60 * 60 * 1000; // MILISECONDS
 
-    if(refundTime > timeGap) {
+    if (refundTime > timeGap) {
         await razorpayInstance.payments.refund(payment.razorpay_payment_id);
         refund = true;
     }
@@ -84,7 +109,8 @@ export const cancelSubscription = catchAsyncError(async(req, res,next) => {
 
     res.status(200).json({
         success: true,
-        message: refund ? "SUBSCRIPTION CANCELLED. YOU WILL GET THE REFUND WITHIN 7 BUSINESS DAYS." : "SUBSCRIPTION CANCELLED. THERE WILL BE NO REFUND AS THE SUBSCRIPTION WAS USED BEYOND THE TRIAL PERIOD."
+        message: refund
+            ? "SUBSCRIPTION CANCELLED. YOU WILL GET THE REFUND WITHIN 7 BUSINESS DAYS."
+            : "SUBSCRIPTION CANCELLED. THERE WILL BE NO REFUND AS THE SUBSCRIPTION WAS USED BEYOND THE TRIAL PERIOD.",
     });
-
 });

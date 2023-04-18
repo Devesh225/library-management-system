@@ -23,9 +23,9 @@ const router = express.Router();
 router
     .route("/organisation/all")
     .get(isAuthenticated, getAllOrganisationsAdmin);
-router.route("/organisation/me").get(getOrganisationProfile);
+router.route("/organisation/me").get(isAuthenticated, getOrganisationProfile);
 router
-    .route("/member/add")
+    .route("/organisation/addmember")
     .post(
         isAuthenticated,
         authorizedSubscribers,
@@ -41,9 +41,7 @@ router
         updateOrganisationAdmin
     );
 router.route("/organisation/login").post(organisationLogin);
-router
-    .route("/organisation/logout")
-    .get(isAuthenticated, authorizedSubscribers, organisationLogout);
+router.route("/organisation/logout").get(isAuthenticated, organisationLogout);
 router
     .route("/organisation/updatepassword")
     .put(
@@ -58,7 +56,7 @@ router
     .route("/organisation/new")
     .post(singleFileUpload, createOrganisationAdmin);
 router
-    .route("/member/remove")
+    .route("/organisation/removemember")
     .delete(isAuthenticated, authorizedSubscribers, removeMemberAdmin);
 router
     .route("/member/search")

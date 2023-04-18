@@ -9,10 +9,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Register.css';
 import { useState } from 'react';
-import defaultAvatar from '../assets/defaultAvatar.png';
 import AboutAvatar from './AboutAvatar';
-import { useDispatch } from 'react-redux';
-import { organisationRegister } from '../redux/actions/organisationAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateOrganisationDetails } from '../redux/actions/organisationAction';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -47,14 +47,22 @@ const theme = createTheme({
   },
 });
 
-const RegisterOrg = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [avatarPreview, setAvatarPreview] = useState(defaultAvatar);
+const UpdateOrgDetails = () => {
+  const {
+    organisation_name,
+    organisation_email,
+    organisation_address,
+    organisation_phone,
+    organisation_logo,
+  } = useSelector(state => state.organisation.organisation);
+
+  const [name, setName] = useState(organisation_name);
+  const [email, setEmail] = useState(organisation_email);
+  const [address, setAddress] = useState(organisation_address);
+  const [phone, setPhone] = useState(organisation_phone);
+  const [avatarPreview, setAvatarPreview] = useState(organisation_logo?.url);
   const [avatar, setAvatar] = useState();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -70,16 +78,16 @@ const RegisterOrg = () => {
     }
   };
 
-  const registerFormSubmitHandler = e => {
+  const updateFormSubmitHandler = e => {
     e.preventDefault();
     const myForm = new FormData();
     myForm.append('name', name);
     myForm.append('email', email);
     myForm.append('address', address);
     myForm.append('phone', phone);
-    myForm.append('password', password);
     myForm.append('file', avatar);
-    dispatch(organisationRegister(myForm));
+    dispatch(updateOrganisationDetails(myForm));
+    navigate('/organisation/me');
   };
 
   return (
@@ -101,13 +109,13 @@ const RegisterOrg = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Register Organisation
+                Update Organisation Details
               </Typography>
               <Box
                 component="form"
                 noValidate
                 sx={{ mt: 3 }}
-                onSubmit={registerFormSubmitHandler}
+                onSubmit={updateFormSubmitHandler}
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -122,6 +130,7 @@ const RegisterOrg = () => {
                       id="name"
                       placeholder="Organisation Name"
                       name="name"
+                      value={name}
                       onChange={e => setName(e.target.value)}
                       autoComplete="family-name"
                     />
@@ -135,6 +144,7 @@ const RegisterOrg = () => {
                       id="email"
                       placeholder="Email Address"
                       name="email"
+                      value={email}
                       onChange={e => setEmail(e.target.value)}
                       autoComplete="email"
                     />
@@ -146,6 +156,7 @@ const RegisterOrg = () => {
                       fullWidth
                       size="small"
                       id="address"
+                      value={address}
                       placeholder="Address"
                       name="address"
                       autoComplete="Address"
@@ -160,24 +171,11 @@ const RegisterOrg = () => {
                       size="small"
                       name="phone"
                       placeholder="Phone"
+                      value={phone}
                       type="number"
                       id="phone"
                       autoComplete="Phone"
                       onChange={e => setPhone(e.target.value)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      className="signup-input"
-                      size="small"
-                      required
-                      fullWidth
-                      name="password"
-                      placeholder="Password"
-                      onChange={e => setPassword(e.target.value)}
-                      type="password"
-                      id="password"
-                      autoComplete="new-password"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -214,21 +212,8 @@ const RegisterOrg = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Register
+                  Update
                 </Button>
-                <Grid container justifyContent="flex-end">
-                  <Grid item sx={{ mb: 'none' }}>
-                    <Link href="/organisationlogin" variant="body2">
-                      Already Registered? Login.
-                    </Link>
-                  </Grid>
-                </Grid>
-                <Grid
-                  sx={{
-                    textAlign: 'center',
-                    marginTop: '1rem',
-                  }}
-                ></Grid>
               </Box>
             </Box>
             <Copyright sx={{ mt: 5, mb: 2, pb: 5, color: 'primary.main' }} />
@@ -239,4 +224,4 @@ const RegisterOrg = () => {
   );
 };
 
-export default RegisterOrg;
+export default UpdateOrgDetails;

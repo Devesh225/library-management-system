@@ -10,7 +10,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Register.css';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { organisationLogin } from '../redux/actions/organisationAction';
+import { removeMember } from '../redux/actions/organisationAction';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -21,7 +22,7 @@ function Copyright(props) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://libraly.com/">
+      <Link color="inherit" href="/">
         Libraly
       </Link>{' '}
       {new Date().getFullYear()}
@@ -45,25 +46,24 @@ const theme = createTheme({
   },
 });
 
-const LoginOrg = () => {
-  const [orgId, setOrgId] = useState('');
-  const [password, setPassword] = useState('');
+const ForgotPasswordOrg = () => {
+  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const loginSubmitHandler = e => {
+  const removeMemberFormSubmitHandler = e => {
     e.preventDefault();
-    dispatch(organisationLogin(orgId, password));
+    dispatch(removeMember(email));
+    navigate('/organisation/me');
   };
 
   return (
     <div className="register__main">
       <div className="signup-container">
         <ThemeProvider theme={theme}>
-          <Container component="main" maxWidth="xs">
+          <Container component="main">
             <CssBaseline />
             <Box
               sx={{
-                marginTop: 5,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -75,13 +75,13 @@ const LoginOrg = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Admin Login Here
+                Remove Member Organisation
               </Typography>
               <Box
                 component="form"
-                onSubmit={loginSubmitHandler}
                 noValidate
                 sx={{ mt: 3 }}
+                onSubmit={removeMemberFormSubmitHandler}
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -90,25 +90,11 @@ const LoginOrg = () => {
                       required
                       fullWidth
                       size="small"
-                      id="orgId"
-                      placeholder="Organisation ID"
-                      name="orgId"
-                      onChange={e => setOrgId(e.target.value)}
-                      autoComplete="family-name"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      className="signup-input"
-                      size="small"
-                      required
-                      fullWidth
-                      name="password"
-                      placeholder="Password"
-                      type="password"
-                      onChange={e => setPassword(e.target.value)}
-                      id="password"
-                      autoComplete="new-password"
+                      id="email"
+                      type="email"
+                      placeholder="Enter Member Email"
+                      name="email"
+                      onChange={e => setEmail(e.target.value)}
                     />
                   </Grid>
                 </Grid>
@@ -127,32 +113,8 @@ const LoginOrg = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Sign in
+                  Remove Member
                 </Button>
-                <Grid container justifyContent="flex-end">
-                  <Grid item sx={{ mb: 'none' }}>
-                    <Link href="/organisationregister" variant="body2">
-                      Not registered yet? Sign up
-                    </Link>
-                  </Grid>
-                </Grid>
-                <Grid
-                  sx={{
-                    textAlign: 'center',
-                    marginTop: '1rem',
-                  }}
-                >
-                  <Grid item sx={{ mb: 'none' }}>
-                    <Link href="/userlogin" variant="body2">
-                      Not An Organisation? User Login.
-                    </Link>
-                  </Grid>
-                  <Grid item sx={{ mb: 'none' }}>
-                    <Link href="/organisation/forgotpassword" variant="body2">
-                      Forgot Password?
-                    </Link>
-                  </Grid>
-                </Grid>
               </Box>
             </Box>
             <Copyright sx={{ mt: 5, mb: 2, pb: 5, color: 'primary.main' }} />
@@ -163,4 +125,4 @@ const LoginOrg = () => {
   );
 };
 
-export default LoginOrg;
+export default ForgotPasswordOrg;

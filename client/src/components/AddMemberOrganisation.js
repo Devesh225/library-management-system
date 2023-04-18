@@ -8,6 +8,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Register.css';
+import { useState } from 'react';
+import defaultAvatar from '../assets/defaultAvatar.png';
+import AboutAvatar from './AboutAvatar';
+import { useDispatch } from 'react-redux';
+import { addMember } from '../redux/actions/organisationAction';
 
 function Copyright(props) {
   return (
@@ -18,7 +23,7 @@ function Copyright(props) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://libraly.com/">
+      <Link color="inherit" href="/">
         Libraly
       </Link>{' '}
       {new Date().getFullYear()}
@@ -42,16 +47,46 @@ const theme = createTheme({
   },
 });
 
-const RegisterUser = () => {
+const AddMemberOrganisation = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [dob, setDob] = useState('');
+  const [avatarPreview, setAvatarPreview] = useState(defaultAvatar);
+  const [avatar, setAvatar] = useState();
+
+  const dispatch = useDispatch();
+
+  const avatarChangeHandler = e => {
+    if (e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result);
+        setAvatar(file);
+      };
+    }
+  };
+  const addMemberFormSubmitHandler = e => {
+    e.preventDefault();
+    const myForm = new FormData();
+    myForm.append('user_name', name);
+    myForm.append('user_email', email);
+    myForm.append('user_phone', phone);
+    myForm.append('user_dob', dob);
+    myForm.append('file', avatar);
+    dispatch(addMember(myForm));
+  };
+
   return (
     <div className="register__main">
       <div className="signup-container">
         <ThemeProvider theme={theme}>
-          <Container component="main" maxWidth="xs">
+          <Container component="main">
             <CssBaseline />
             <Box
               sx={{
-                marginTop: 5,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -63,32 +98,28 @@ const RegisterUser = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Register
+                Add Member
               </Typography>
-              <Box component="form" noValidate sx={{ mt: 3 }}>
+              <Box
+                component="form"
+                noValidate
+                sx={{ mt: 3 }}
+                onSubmit={addMemberFormSubmitHandler}
+              >
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      className="signup-input"
-                      autoComplete="given-name"
-                      name="firstName"
-                      required
-                      fullWidth
-                      size="small"
-                      id="firstName"
-                      placeholder="First Name"
-                      autoFocus
-                    />
+                  <Grid item xs={12}>
+                    <AboutAvatar avatar={avatarPreview} />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
                       className="signup-input"
                       required
                       fullWidth
                       size="small"
-                      id="lastName"
-                      placeholder="Last Name"
-                      name="lastName"
+                      id="name"
+                      placeholder="Member Name"
+                      name="name"
+                      onChange={e => setName(e.target.value)}
                       autoComplete="family-name"
                     />
                   </Grid>
@@ -101,6 +132,7 @@ const RegisterUser = () => {
                       id="email"
                       placeholder="Email Address"
                       name="email"
+                      onChange={e => setEmail(e.target.value)}
                       autoComplete="email"
                     />
                   </Grid>
@@ -115,19 +147,38 @@ const RegisterUser = () => {
                       type="number"
                       id="phone"
                       autoComplete="Phone"
+                      onChange={e => setPhone(e.target.value)}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       className="signup-input"
+                      size="small"
+                      required
+                      fullWidth
+                      name="dob"
+                      placeholder="Date Of Birth (DDMMYYYY)"
+                      onChange={e => setDob(e.target.value)}
+                      type="number"
+                      id="dob"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography sx={{ color: 'white', textAlign: 'center' }}>
+                      Choose Avatar
+                    </Typography>
+                    <TextField
+                      className="signup-input"
                       required
                       fullWidth
                       size="small"
-                      name="dob"
-                      placeholder="Date of birth"
-                      type="date"
-                      id="dob"
-                      autoComplete="Date of birth"
+                      type="file"
+                      accept="image/*"
+                      id="avatarPreview"
+                      placeholder="Avatar"
+                      name="avatarPreview"
+                      autoComplete="Avatar"
+                      onChange={avatarChangeHandler}
                     />
                   </Grid>
                 </Grid>
@@ -146,20 +197,8 @@ const RegisterUser = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Sign up
+                  Add Member
                 </Button>
-                <Grid
-                  sx={{
-                    textAlign: 'center',
-                    marginTop: '1rem',
-                  }}
-                >
-                  <Grid item>
-                    <Link href="/organisationregister" variant="body2">
-                      Organisation Registration
-                    </Link>
-                  </Grid>
-                </Grid>
               </Box>
             </Box>
             <Copyright sx={{ mt: 5, mb: 2, pb: 5, color: 'primary.main' }} />
@@ -170,4 +209,4 @@ const RegisterUser = () => {
   );
 };
 
-export default RegisterUser;
+export default AddMemberOrganisation;

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -10,13 +10,20 @@ import Grid from '@mui/material/Grid';
 import StarIcon from '@mui/icons-material/StarBorder';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { useDispatch, useSelector } from 'react-redux';
+import { createOrganisationSubscription } from '../redux/actions/paymentAction';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { server } from '../redux/store';
+import toast from 'react-hot-toast';
+import logo from '../assets/logo.png';
+// import LoadingButton from '@mui/lab/LoadingButton';
 // import Footer from "../Footer";
 
 const tiers = [
   {
-    title: 'STARTER',
-    price: '1,500',
-    ppm: '500',
+    title: 'Basic',
+    price: '3,000',
     description: [
       'Plan for 3 months',
       'List upto 20,000 books',
@@ -28,11 +35,10 @@ const tiers = [
     buttonColor: 'secondary',
   },
   {
-    title: 'PRO',
+    title: 'Premium',
     subheader: 'Best deal ever',
     subheader2: '20% discount',
-    price: '4,800',
-    ppm: '400',
+    price: '10,000',
     description: [
       'Plan for a year',
       'List upto 50,000 books',
@@ -44,9 +50,8 @@ const tiers = [
     buttonColor: 'secondary',
   },
   {
-    title: 'PLUS',
-    price: '3,000',
-    ppm: '500',
+    title: 'Pro',
+    price: '5,000',
     description: [
       'Plan for 6 months',
       'List upto 20,000 books',
@@ -59,7 +64,80 @@ const tiers = [
   },
 ];
 
-function PricingContent() {
+const Pricing = () => {
+  const { isAuthenticated, organisation } = useSelector(
+    state => state.organisation
+  );
+  const { loading, subscriptionID, error } = useSelector(
+    state => state.payment
+  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [plan, setPlan] = useState('');
+  const [razorKey, setRazorKey] = useState('');
+  const pricingSubmitHandler = async e => {
+    setPlan(e.target.id);
+    const { data } = await axios.get(`${server}/organisation/razorpaykey`);
+    setRazorKey(data.key);
+    dispatch(createOrganisationSubscription(plan));
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearError' });
+    }
+    if (subscriptionID) {
+      const open = () => {
+        let planAmount = 0;
+        if (plan === 'Basic') {
+          planAmount = 3000;
+        } else if (plan === 'Pro') {
+          planAmount = 5000;
+        } else if (plan === 'Premium') {
+          planAmount = 10000;
+        }
+        const options = {
+          key: razorKey,
+          amount: planAmount, // AMOUNT IN PAISE
+          currency: 'INR',
+          name: 'Libraly',
+          description: 'Transaction for subscription of Libraly',
+          image: logo,
+          subscription_id: subscriptionID,
+          callback_url: `${server}/organisation/paymentverification`,
+          prefill: {
+            name: organisation?.organisation_name,
+            email: organisation?.organisation_email,
+            contact: organisation?.organisation_phone,
+          },
+          notes: {
+            address: 'Libraly Head Office',
+          },
+          theme: {
+            color: '##FFA500',
+          },
+        };
+        const razor = new window.Razorpay(options);
+        razor.open();
+      };
+      open();
+    }
+  }, [
+    dispatch,
+    error,
+    organisation?.organisation_name,
+    organisation?.organisation_email,
+    organisation?.organisation_phone,
+    plan,
+    razorKey,
+    subscriptionID,
+  ]);
+
+  const unAuthenticatedHandler = () => {
+    navigate('/organisationlogin');
+  };
+
   return (
     <>
       <React.Fragment>
@@ -147,11 +225,7 @@ function PricingContent() {
                         alignItems: 'baseline',
                         mb: 2,
                       }}
-                    >
-                      <Typography variant="h6" color="text.secondary">
-                        ₹{tier.ppm}/mo
-                      </Typography>
-                    </Box>
+                    ></Box>
                     <ul>
                       {tier.description.map(line => (
                         <Typography
@@ -166,7 +240,17 @@ function PricingContent() {
                     </ul>
                   </CardContent>
                   <CardActions>
-                    <Button fullWidth variant={tier.buttonVariant}>
+                    <Button
+                      fullWidth
+                      id={tier.title}
+                      variant={tier.buttonVariant}
+                      onClick={
+                        isAuthenticated
+                          ? pricingSubmitHandler
+                          : unAuthenticatedHandler
+                      }
+                      disabled={loading}
+                    >
                       {tier.buttonText}
                     </Button>
                   </CardActions>
@@ -178,8 +262,6 @@ function PricingContent() {
       </React.Fragment>
     </>
   );
-}
+};
 
-export default function Pricing() {
-  return <PricingContent />;
-}
+export default Pricing;

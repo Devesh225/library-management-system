@@ -5,6 +5,8 @@ import getDataURI from "../utils/dataURI.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { sendToken } from "../utils/sendToken.js";
 import cloudinary from "cloudinary";
+import { sendEmail } from "../utils/sendEmail.js";
+import crypto from "crypto";
 
 export const getAllOrganisationsAdmin = catchAsyncError(
     async (req, res, next) => {
@@ -86,12 +88,15 @@ export const createOrganisationAdmin = catchAsyncError(
             organisation_password: password,
         });
 
-        // TODO: MAIL THE ORGANISATION ID, PASSWORD AND OTHER DETAILS TO THE ORGANISATION EMAIL.
+        sendToken(
+            res,
+            organisation,
+            null,
+            "ORGANISATION REGISTERED SUCCESSFULLY",
+            200
+        );
 
-        res.status(201).json({
-            success: true,
-            message: "ORGANISATION ADDED SUCCESSFULLY.",
-        });
+        // TODO: MAIL THE ORGANISATION ID, PASSWORD AND OTHER DETAILS TO THE ORGANISATION EMAIL.
     }
 );
 
@@ -111,6 +116,8 @@ export const organisationLogin = catchAsyncError(async (req, res, next) => {
         return next(new ErrorHandler("INCORRECT ID OR PASSWORD", 401));
     }
 
+    organisation.organisation_password = undefined;
+
     sendToken(
         res,
         organisation,
@@ -126,7 +133,7 @@ export const organisationLogout = catchAsyncError(async (req, res, next) => {
             expires: new Date(Date.now()),
             httpOnly: true,
             // secure: true,
-            sameSite: "none",
+            // sameSite: "None",
         })
         .json({
             success: true,
@@ -199,6 +206,15 @@ export const addMemberAdmin = catchAsyncError(async (req, res, next) => {
         return next(new ErrorHandler("PLEASE ENTER ALL FIELDS.", 400));
     }
 
+    if (user_dob.length !== 8) {
+        return next(
+            new ErrorHandler(
+                "PLEASE ENTER DOB IN CORRECT FORMAT AND ORDER",
+                400
+            )
+        );
+    }
+
     const organisation = await organisationModel.findById(req.organisation._id);
 
     if (!organisation) {
@@ -256,35 +272,54 @@ export const addMemberAdmin = catchAsyncError(async (req, res, next) => {
         user_id = lastUserOfOrg[0].user_id + 1;
     }
 
-    member = await userModel.create({
-        organisation_id,
-        organisation_name,
-        user_avatar: {
-            public_id: updatedMemberData.public_id,
-            url: updatedMemberData.url,
-        },
-        user_id,
-        user_name,
-        user_password: user_dob,
-        user_email,
-        user_phone,
-        user_dob,
-    });
+    try {
+        member = await userModel.create({
+            organisation_id,
+            organisation_name,
+            user_avatar: {
+                public_id: updatedMemberData.public_id,
+                url: updatedMemberData.url,
+            },
+            user_id,
+            user_name,
+            user_password: user_dob,
+            user_email,
+            user_phone,
+            user_dob,
+        });
+    } catch (error) {
+        return next(
+            new ErrorHandler(
+                "INTERNAL SERVER ERROR, PLEASE CHECK THE FORM DETAILS ONCE AGAIN.",
+                409
+            )
+        );
+    }
 
     // TODO: EMAIL THE LOGIN CREDENTIALS TO THE MEMBER.
 
     res.status(201).json({
         success: true,
+        member,
         message: "MEMBER ADDED SUCCESSFULLY.",
     });
 });
 
 export const updateOrganisationPasswordAdmin = catchAsyncError(
     async (req, res, next) => {
-        const { oldPassword, newPassword } = req.body;
+        const { oldPassword, newPassword, confirmPassword } = req.body;
 
-        if (!oldPassword || !newPassword) {
+        if (!oldPassword || !newPassword || !confirmPassword) {
             return next(new ErrorHandler("PLEASE ENTER ALL FIELDS.", 400));
+        }
+
+        if (newPassword !== confirmPassword) {
+            return next(
+                new ErrorHandler(
+                    "NEW PASSWORD AND CONFIRM PASSWORD ARE NOT EQUAL.",
+                    400
+                )
+            );
         }
 
         const organisation = await organisationModel
@@ -294,7 +329,7 @@ export const updateOrganisationPasswordAdmin = catchAsyncError(
         const isPasswordMatch = await organisation.comparePassword(oldPassword);
 
         if (!isPasswordMatch) {
-            return next(new ErrorHandler("INCORRECT PASSWORD", 401));
+            return next(new ErrorHandler("INCORRECT OLD PASSWORD", 401));
         }
 
         organisation.organisation_password = newPassword;
@@ -319,6 +354,17 @@ export const removeMemberAdmin = catchAsyncError(async (req, res, next) => {
     if (!member) {
         return next(
             new ErrorHandler("MEMBER WITH THE GIVEN EMAIL DOES NOT EXIST.", 409)
+        );
+    }
+
+    const organisation = await organisationModel.findById(req.organisation._id);
+
+    if (member.organisation_id !== organisation.organisation_id) {
+        return next(
+            new ErrorHandler(
+                "MEMBER DOES NOT EXIST OR DOES NOT BELONG TO YOUR ORGANISATION",
+                409
+            )
         );
     }
 
@@ -405,7 +451,7 @@ export const organisationForgotPasswordAdmin = catchAsyncError(
 
         await organisation.save();
 
-        const resetUrl = `${process.env.FRONTEND_URL}/api/v1/organisation/resetpassword/${resetToken}`;
+        const resetUrl = `${process.env.FRONTEND_URL}/organisation/resetpassword/${resetToken}`;
 
         // SEND THIS RESET TOKEN VIA EMAIL
 
