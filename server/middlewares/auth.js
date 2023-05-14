@@ -13,7 +13,7 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
     if (decodedData._type === "organisation") {
         req.organisation = await organisationModel.findById(decodedData._id);
     } else if (decodedData._type === "member") {
-        req.user = await userModel.findById(decodedData._id);
+        req.member = await userModel.findById(decodedData._id);
     }
     next();
 });

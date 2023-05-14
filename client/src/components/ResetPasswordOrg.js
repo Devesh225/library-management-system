@@ -46,7 +46,7 @@ const theme = createTheme({
   },
 });
 
-const ForgotPasswordOrg = () => {
+const ResetPasswordOrg = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -126,4 +126,4 @@ const ForgotPasswordOrg = () => {
   );
 };
 
-export default ForgotPasswordOrg;
+export default ResetPasswordOrg;

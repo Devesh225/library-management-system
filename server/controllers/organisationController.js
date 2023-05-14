@@ -20,13 +20,22 @@ export const getAllOrganisationsAdmin = catchAsyncError(
 
 export const getOrganisationProfile = catchAsyncError(
     async (req, res, next) => {
-        const organisation = await organisationModel.findById(
-            req.organisation._id
-        );
+        let organisation = null;
+        if (!req.organisation) {
+            res.status(200).json({
+                success: false,
+            });
+            return;
+        } else {
+            organisation = await organisationModel.findById(
+                req.organisation._id
+            );
+        }
         res.status(200).json({
             success: true,
             organisation,
         });
+        return;
     }
 );
 
@@ -499,6 +508,101 @@ export const organisationResetPasswordAdmin = catchAsyncError(
         res.status(200).json({
             success: true,
             message: "PASSWORD CHANGED SUCCESSFULLY.",
+        });
+    }
+);
+
+export const getAllMembersAdmin = catchAsyncError(async (req, res, next) => {
+    const organisation = await organisationModel.findById(req.organisation._id);
+    const members = await userModel.find({
+        organisation_id: organisation.organisation_id,
+    });
+    res.status(200).json({
+        success: true,
+        members,
+    });
+});
+
+export const deleteOrganisationSuperAdmin = catchAsyncError(
+    async (req, res, next) => {
+        const { id } = req.params;
+
+        await organisationModel.findByIdAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: "ORGANISATION DELETED SUCCESSFULLY.",
+        });
+    }
+);
+
+export const updateOrganisationSuperAdmin = catchAsyncError(
+    async (req, res, next) => {
+        const { id, name, address, email, phone } = req.body;
+
+        const file = req.file;
+
+        let organisation = await organisationModel.findById(id);
+
+        let updatedOrgData = {};
+
+        if (name) {
+            updatedOrgData.organisation_name = name;
+        }
+
+        if (address) {
+            updatedOrgData.organisation_address = address;
+        }
+
+        if (email) {
+            updatedOrgData.organisation_email = email;
+        }
+
+        if (phone) {
+            updatedOrgData.organisation_phone = phone;
+        }
+
+        if (file) {
+            const fileURI = getDataURI(file);
+            const mycloud = await cloudinary.v2.uploader.upload(
+                fileURI.content
+            );
+            await cloudinary.v2.uploader.destroy(
+                organisation.organisation_logo.public_id
+            );
+            updatedOrgData.organisation_logo = {
+                public_id: mycloud.public_id,
+                url: mycloud.secure_url,
+            };
+        }
+
+        await organisationModel.findByIdAndUpdate(
+            organisation._id,
+            updatedOrgData,
+            { new: true, runValidators: true }
+        );
+
+        await organisation.save();
+
+        res.status(200).json({
+            success: true,
+            message: "ORGANISATION UPDATED SUCCESSFULLY.",
+        });
+    }
+);
+
+export const getOrganisationProfileById = catchAsyncError(
+    async (req, res, next) => {
+        const { id } = req.params;
+        const updateorg = await organisationModel.findById(id);
+        if (!updateorg) {
+            return next(
+                new ErrorHandler("INTERNAL SERVER ERROR, PLEASE TRY AGAIN", 400)
+            );
+        }
+        res.status(200).json({
+            success: true,
+            updateorg,
         });
     }
 );

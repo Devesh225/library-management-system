@@ -126,6 +126,107 @@ export const organisationReducer = createReducer(
       state.loading = false;
       state.error = action.payload;
     },
+    addBookAdminRequest: state => {
+      state.loading = true;
+    },
+    addBookAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.book = action.payload.book;
+      state.message = action.payload.message;
+    },
+    addBookAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateBookAdminRequest: state => {
+      state.loading = true;
+    },
+    updateBookAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.book = action.payload.book;
+      state.message = action.payload.message;
+    },
+    updateBookAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    getBookAdminRequest: state => {
+      state.loading = true;
+    },
+    getBookAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.book = action.payload.book;
+    },
+    getBookAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteBookAdminRequest: state => {
+      state.loading = true;
+    },
+    deleteBookAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+    },
+    deleteBookAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    allMembersRequest: state => {
+      state.loading = true;
+    },
+    allMembersSuccess: (state, action) => {
+      state.loading = false;
+      state.members = action.payload.members;
+    },
+    allMembersFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    allOrganisationsRequest: state => {
+      state.loading = true;
+    },
+    allOrganisationsSuccess: (state, action) => {
+      state.loading = false;
+      state.organisations = action.payload.organisations;
+    },
+    allOrganisationsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateDetailsSuperAdminRequest: state => {
+      state.loading = true;
+    },
+    updateDetailsSuperAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+    },
+    updateDetailsSuperAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteSuperAdminRequest: state => {
+      state.loading = true;
+    },
+    deleteSuperAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+    },
+    deleteSuperAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    orgDetailsRequest: state => {
+      state.loading = true;
+    },
+    orgDetailsSuccess: (state, action) => {
+      state.loading = false;
+      state.updateorg = action.payload.updateorg;
+    },
+    orgDetailsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     clearError: state => {
       state.error = null;
     },

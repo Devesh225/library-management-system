@@ -1,38 +1,39 @@
 import mongoose from "mongoose";
 
 const borrowedBookSchema = new mongoose.Schema({
-    
     borrowedBook_user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
-        required: true
+        ref: "users",
+        required: true,
     },
 
     borrowedBook_book_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'books',
-        required: true
+        ref: "books",
+        required: true,
     },
 
     borrowedBook_borrowed_date: {
         type: Date,
-        required: true
+        required: true,
     },
 
     borrowedBook_due_date: {
         type: Date,
-        required: true
+        required: true,
     },
 
     borrowedBook_returned_date: {
-        type: Date
+        type: Date,
     },
 
     borrowedBook_is_returned: {
         type: Boolean,
-        default: false
+        default: false,
     },
-
 });
 
-export const borrowedBooksModel = mongoose.model('borrowedbooks', borrowedBookSchema);
+export const borrowedBooksModel = mongoose.model(
+    "borrowedbooks",
+    borrowedBookSchema
+);

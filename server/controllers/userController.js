@@ -6,20 +6,21 @@ import { sendToken } from "../utils/sendToken.js";
 import crypto from "crypto";
 import cloudinary from "cloudinary";
 import getDataURI from "../utils/dataURI.js";
-
-export const getAllMembersAdmin = catchAsyncError(async (req, res, next) => {
-    const members = await userModel.find();
-    res.status(200).json({
-        success: true,
-        members,
-    });
-});
+import { organisationModel } from "../models/organisationModel.js";
 
 export const memberLogin = catchAsyncError(async (req, res, next) => {
-    const { id, password } = req.body;
+    const { orgId, id, password } = req.body;
 
-    if (!id || !password) {
+    if (!orgId || !id || !password) {
         return next(new ErrorHandler("PLEASE ENTER ALL FIELDS.", 400));
+    }
+
+    const organisation = await organisationModel.find({
+        organisation_id: orgId,
+    });
+
+    if (!organisation) {
+        return next(new ErrorHandler("ENTER THE CORRECT ORGANISATION ID", 400));
     }
 
     const member = await userModel
@@ -28,6 +29,12 @@ export const memberLogin = catchAsyncError(async (req, res, next) => {
 
     if (!member) {
         return next(new ErrorHandler("MEMBER DOES NOT EXIST", 401));
+    }
+
+    if (Number(member.organisation_id) !== Number(orgId)) {
+        return next(
+            new ErrorHandler("MEMBER DOES NOT BELONG TO THIS ORGANISATION", 401)
+        );
     }
 
     const isPasswordMatch = await member.comparePassword(password);
@@ -45,7 +52,7 @@ export const memberLogout = catchAsyncError(async (req, res, next) => {
             expires: new Date(Date.now()),
             httpOnly: true,
             // secure: true,
-            sameSite: "none",
+            // sameSite: "none",
         })
         .json({
             success: true,
@@ -54,34 +61,50 @@ export const memberLogout = catchAsyncError(async (req, res, next) => {
 });
 
 export const getMemberProfile = catchAsyncError(async (req, res, next) => {
-    const user = await userModel.findById(req.user._id);
+    let member = null;
+    if (!req.member) {
+        res.status(200).json({
+            success: false,
+        });
+    } else {
+        member = await userModel.findById(req.member._id);
+    }
 
     res.status(200).json({
         success: true,
-        user,
+        member,
     });
 });
 
 export const updateMemberPassword = catchAsyncError(async (req, res, next) => {
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
 
     if (!oldPassword || !newPassword) {
         return next(new ErrorHandler("PLEASE ENTER ALL FIELDS.", 400));
     }
 
-    const user = await userModel
-        .findById(req.user._id)
+    if (newPassword !== confirmPassword) {
+        return next(
+            new ErrorHandler(
+                "NEW PASSWORD AND CONFIRM PASSWORD ARE NOT EQUAL.",
+                400
+            )
+        );
+    }
+
+    const member = await userModel
+        .findById(req.member._id)
         .select("+user_password");
 
-    const isPasswordMatch = await user.comparePassword(oldPassword);
+    const isPasswordMatch = await member.comparePassword(oldPassword);
 
     if (!isPasswordMatch) {
         return next(new ErrorHandler("INCORRECT PASSWORD", 401));
     }
 
-    user.user_password = newPassword;
+    member.user_password = newPassword;
 
-    await user.save();
+    await member.save();
 
     res.status(200).json({
         success: true,
@@ -91,56 +114,51 @@ export const updateMemberPassword = catchAsyncError(async (req, res, next) => {
 
 export const updateMemberProfile = catchAsyncError(async (req, res, next) => {
     const { name, email, phone, dob } = req.body;
+    const file = req.file;
 
-    const user = await userModel.findById(req.user._id);
+    let member = await userModel.findById(req.member._id);
+
+    let updatedData = {};
 
     if (name) {
-        user.user_name = name;
-    }
-    if (email) {
-        user.user_email = email;
-    }
-    if (phone) {
-        user.user_phone = phone;
-    }
-    if (dob) {
-        user.user_dob = dob;
+        updatedData.user_name = name;
     }
 
-    await user.save();
+    if (dob) {
+        updatedData.user_dob = dob;
+    }
+
+    if (email) {
+        updatedData.user_email = email;
+    }
+
+    if (phone) {
+        updatedData.user_phone = phone;
+    }
+
+    if (file) {
+        const fileURI = getDataURI(file);
+        const mycloud = await cloudinary.v2.uploader.upload(fileURI.content);
+        await cloudinary.v2.uploader.destroy(member.user_avatar.public_id);
+        updatedData.user_avatar = {
+            public_id: mycloud.public_id,
+            url: mycloud.secure_url,
+        };
+    }
+
+    member = await userModel.findByIdAndUpdate(member._id, updatedData, {
+        new: true,
+        runValidators: true,
+    });
+
+    await member.save();
 
     res.status(200).json({
         success: true,
         message: "PROFILE UPDATED SUCCESSFULLY.",
+        member,
     });
 });
-
-export const updateMemberProfilePicture = catchAsyncError(
-    async (req, res, next) => {
-        const user = await userModel.findById(req.user._id);
-
-        const file = req.file;
-
-        if (file) {
-            const fileURI = getDataURI(file);
-            const mycloud = await cloudinary.v2.uploader.upload(
-                fileURI.content
-            );
-            await cloudinary.v2.uploader.destroy(user.user_avatar.public_id);
-            user.user_avatar = {
-                public_id: mycloud.public_id,
-                url: mycloud.secure_url,
-            };
-        }
-
-        await user.save();
-
-        res.status(200).json({
-            success: true,
-            message: "PROFILE PICTURE UPDATED SUCCESSFULLY.",
-        });
-    }
-);
 
 export const memberForgotPassword = catchAsyncError(async (req, res, next) => {
     const { email } = req.body;
@@ -159,7 +177,7 @@ export const memberForgotPassword = catchAsyncError(async (req, res, next) => {
 
     await user.save();
 
-    const resetUrl = `${process.env.FRONTEND_URL}/api/v1/member/resetpassword/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/member/resetpassword/${resetToken}`;
 
     // SEND THIS RESET TOKEN VIA EMAIL
 

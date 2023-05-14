@@ -13,7 +13,6 @@ const ResponsiveSideBar = () => {
     dispatch(organisationLogout());
   };
   const updateOrgDetailsHandler = e => {
-    console.log('BUTTON CLICKED');
     navigate('/organisation/update');
   };
   const pricingSubmitHandler = e => {
@@ -28,6 +27,20 @@ const ResponsiveSideBar = () => {
   const removeMemberOrganisation = e => {
     navigate('/organisation/removemember');
   };
+  const allMembersOrganisation = e => {
+    navigate('/organisation/allmembers');
+  };
+  const showAllBooksOrganisation = e => {
+    navigate('/organisation/books');
+  };
+  const addNewBookOrganisation = e => {
+    navigate('/organisation/book/add');
+  };
+
+  const getAllOrganisationsHandler = e => {
+    navigate('/organisation/all');
+  };
+
   return (
     <div style={{ marginBottom: '1rem' }}>
       <Box
@@ -46,7 +59,8 @@ const ResponsiveSideBar = () => {
           <Typography>{organisation?.organisation_name}</Typography>
           <Button type="submit">LOGOUT</Button>
         </Box>
-        {organisation?.organisation_subscription?.status === 'active' ? null : (
+        {organisation.organisation_id === 0 ? null : organisation
+            ?.organisation_subscription?.status === 'active' ? null : (
           <Button onClick={pricingSubmitHandler}>PRICING</Button>
         )}
         <Button onClick={updateOrgDetailsHandler}>
@@ -55,8 +69,21 @@ const ResponsiveSideBar = () => {
         <Button onClick={updateOrgPasswordHandler}>
           UPDATE ORGANISATION PASSWORD
         </Button>
-        <Button onClick={addMemberOrganisation}>ADD MEMBER</Button>
-        <Button onClick={removeMemberOrganisation}>REMOVE MEMBER</Button>
+        {organisation.organisation_id === 0 ? (
+          <Box>
+            <Button onClick={getAllOrganisationsHandler}>
+              SHOW ALL ORGANISATIONS
+            </Button>
+          </Box>
+        ) : (
+          <Box>
+            <Button onClick={addMemberOrganisation}>ADD MEMBER</Button>
+            <Button onClick={removeMemberOrganisation}>REMOVE MEMBER</Button>
+            <Button onClick={allMembersOrganisation}>ALL MEMBERS LIST</Button>
+            <Button onClick={showAllBooksOrganisation}>SHOW ALL BOOKS</Button>
+            <Button onClick={addNewBookOrganisation}>ADD NEW BOOK</Button>
+          </Box>
+        )}
       </Box>
     </div>
   );

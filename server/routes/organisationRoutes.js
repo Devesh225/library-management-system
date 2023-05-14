@@ -3,8 +3,11 @@ import {
     addMemberAdmin,
     createOrganisationAdmin,
     deleteOrganisationAdmin,
+    deleteOrganisationSuperAdmin,
+    getAllMembersAdmin,
     getAllOrganisationsAdmin,
     getOrganisationProfile,
+    getOrganisationProfileById,
     getSingleMemberDetails,
     organisationForgotPasswordAdmin,
     organisationLogin,
@@ -14,6 +17,7 @@ import {
     searchSingleMemberWithId,
     updateOrganisationAdmin,
     updateOrganisationPasswordAdmin,
+    updateOrganisationSuperAdmin,
 } from "../controllers/organisationController.js";
 import { authorizedSubscribers, isAuthenticated } from "../middlewares/auth.js";
 import singleFileUpload from "../middlewares/multer.js";
@@ -70,5 +74,20 @@ router
 router
     .route("/member/:id")
     .get(isAuthenticated, authorizedSubscribers, getSingleMemberDetails);
+
+router
+    .route("/organisation/allmembers")
+    .get(isAuthenticated, authorizedSubscribers, getAllMembersAdmin); // ADMIN
+
+router
+    .route("/updateorganisation")
+    .put(isAuthenticated, singleFileUpload, updateOrganisationSuperAdmin);
+router
+    .route("/deleteorganisation/:id")
+    .delete(isAuthenticated, deleteOrganisationSuperAdmin);
+
+router
+    .route("/organisation/details/:id")
+    .get(isAuthenticated, getOrganisationProfileById);
 
 export default router;

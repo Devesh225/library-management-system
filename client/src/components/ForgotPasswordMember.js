@@ -7,10 +7,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useDispatch } from 'react-redux';
 import './Register.css';
 import { useState } from 'react';
-import { memberLogin } from '../redux/actions/memberAction';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { forgotPasswordMember } from '../redux/actions/memberAction';
 
 function Copyright(props) {
   return (
@@ -21,7 +22,7 @@ function Copyright(props) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://libraly.com/">
+      <Link color="inherit" href="/">
         Libraly
       </Link>{' '}
       {new Date().getFullYear()}
@@ -45,25 +46,25 @@ const theme = createTheme({
   },
 });
 
-const LoginUser = () => {
-  const [orgId, setOrgId] = useState('');
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
+const ForgotPasswordMember = () => {
+  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const loginSubmitHandler = e => {
+  const updatePasswordFormSubmitHandler = e => {
     e.preventDefault();
-    dispatch(memberLogin(orgId, userId, password));
+    dispatch(forgotPasswordMember(email));
+    navigate('/userlogin');
   };
+
   return (
     <div className="register__main">
       <div className="signup-container">
         <ThemeProvider theme={theme}>
-          <Container component="main" maxWidth="xs">
+          <Container component="main">
             <CssBaseline />
             <Box
               sx={{
-                marginTop: 5,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -75,13 +76,13 @@ const LoginUser = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                User Login
+                Forgot Password
               </Typography>
               <Box
                 component="form"
-                onSubmit={loginSubmitHandler}
                 noValidate
                 sx={{ mt: 3 }}
+                onSubmit={updatePasswordFormSubmitHandler}
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -90,35 +91,11 @@ const LoginUser = () => {
                       required
                       fullWidth
                       size="small"
-                      id="orgId"
-                      onChange={e => setOrgId(e.target.value)}
-                      placeholder="Organisation ID"
-                      name="orgId"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      className="signup-input"
-                      required
-                      fullWidth
-                      size="small"
-                      id="userId"
-                      onChange={e => setUserId(e.target.value)}
-                      placeholder="User ID"
-                      name="userId"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      className="signup-input"
-                      size="small"
-                      required
-                      fullWidth
-                      onChange={e => setPassword(e.target.value)}
-                      name="password"
-                      placeholder="Password"
-                      type="password"
-                      id="password"
+                      id="email"
+                      type="email"
+                      placeholder="Email"
+                      name="email"
+                      onChange={e => setEmail(e.target.value)}
                     />
                   </Grid>
                 </Grid>
@@ -137,15 +114,8 @@ const LoginUser = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Sign in
+                  Send Reset Password Link
                 </Button>
-                <Grid container justifyContent="flex-end">
-                  <Grid item sx={{ mb: 'none' }}>
-                    <Link href="/member/forgotpassword" variant="body2">
-                      Forgot Password?
-                    </Link>
-                  </Grid>
-                </Grid>
               </Box>
             </Box>
             <Copyright sx={{ mt: 5, mb: 2, pb: 5, color: 'primary.main' }} />
@@ -156,4 +126,4 @@ const LoginUser = () => {
   );
 };
 
-export default LoginUser;
+export default ForgotPasswordMember;
