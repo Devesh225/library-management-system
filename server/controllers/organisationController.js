@@ -7,6 +7,7 @@ import { sendToken } from "../utils/sendToken.js";
 import cloudinary from "cloudinary";
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
+import { bookModel } from "../models/bookModel.js";
 
 export const getAllOrganisationsAdmin = catchAsyncError(
     async (req, res, next) => {
@@ -616,6 +617,19 @@ export const getOrganisationProfileById = catchAsyncError(
         res.status(200).json({
             success: true,
             updateorg,
+        });
+    }
+);
+
+export const getTotalBooksSuperAdmin = catchAsyncError(
+    async (req, res, next) => {
+        console.log("INSIDE");
+        const books = await bookModel.find();
+        let totalBooks = books.length;
+        console.log(books.length);
+        res.status(200).json({
+            success: true,
+            totalBooks,
         });
     }
 );

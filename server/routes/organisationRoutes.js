@@ -9,6 +9,7 @@ import {
     getOrganisationProfile,
     getOrganisationProfileById,
     getSingleMemberDetails,
+    getTotalBooksSuperAdmin,
     organisationForgotPasswordAdmin,
     organisationLogin,
     organisationLogout,
@@ -85,5 +86,9 @@ router
 router
     .route("/organisation/details/:id")
     .get(isAuthenticated, getOrganisationProfileById);
+
+router
+    .route("/organisation/allbooks")
+    .get(isAuthenticated, getTotalBooksSuperAdmin);
 
 export default router;

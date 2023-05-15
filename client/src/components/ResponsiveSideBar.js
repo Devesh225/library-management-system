@@ -238,7 +238,7 @@ const superAdminNavList = [
   {
     text: 'View Statistics',
     icon: <MenuBookIcon />,
-    route: '/organisation/updatepassword',
+    route: '/organisation/dashboard',
   },
   {
     text: 'View All Organisations',
