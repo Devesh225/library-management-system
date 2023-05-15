@@ -26,14 +26,19 @@ export const createSubscription = catchAsyncError(async (req, res, next) => {
         total_count: 3,
     });
 
+    if (!subscription) {
+        return next(new ErrorHandler("PLEASE SELECT A PACKAGE.", 400));
+    }
+
     organisation.organisation_subscription.id = subscription.id;
     organisation.organisation_subscription.status = subscription.status;
+
+    console.log(organisation.organisation_subscription.status);
 
     await organisation.save();
 
     res.status(201).json({
         success: true,
-        message: "SUBSCRIPTION CREATED SUCCESSFULLY.",
         subscriptionID: subscription.id,
     });
 });

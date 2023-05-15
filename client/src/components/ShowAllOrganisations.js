@@ -33,11 +33,11 @@ const ShowAllOrganisations = () => {
   const deleteOrganisationHandler = e => {
     dispatch(deleteOrganisationSuperAdmin(e.currentTarget.id));
     navigate('/organisation/all');
-    dispatch(getAllOrganisations());
+    window.location.reload();
   };
 
   return (
-    <div>
+    <div style={{ margin: 'auto', width: '80%', marginTop: '8%' }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -64,7 +64,9 @@ const ShowAllOrganisations = () => {
                   <TableCell align="right">{row.organisation_email}</TableCell>
                   <TableCell align="right">{row.organisation_phone}</TableCell>
                   <TableCell align="right">
-                    {row.organisation_subscription?.status}
+                    {row.organisation_subscription?.status
+                      ? 'ACTIVE'
+                      : 'INACTIVE'}
                   </TableCell>
                   <TableCell align="right">
                     <IconButton

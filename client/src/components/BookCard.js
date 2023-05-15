@@ -35,7 +35,7 @@ const BookCard = ({ book }) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 350 }}>
       <CardActionArea>
         <CardMedia
           component="img"
@@ -87,13 +87,13 @@ const BookCard = ({ book }) => {
             ADD TO WAITLIST
           </Button>
         ) : organisation ? (
-          <Grid>
+          <Grid sx={{ margin: 'auto' }}>
             <Button
               onClick={updateBookHandler}
               size="small"
               color="primary"
               variant="contained"
-              sx={{ marginRight: '1rem' }}
+              sx={{ marginRight: '5rem' }}
             >
               UPDATE
             </Button>
@@ -102,7 +102,6 @@ const BookCard = ({ book }) => {
               size="small"
               color="primary"
               variant="contained"
-              sx={{ marginLeft: '1rem' }}
             >
               DELETE
             </Button>

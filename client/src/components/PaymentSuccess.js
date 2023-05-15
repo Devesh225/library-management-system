@@ -10,7 +10,7 @@ const PaymentSuccess = () => {
     navigate('/organisation/me');
   };
   return (
-    <div>
+    <div style={{ margin: '6%' }}>
       <h2>PAYMENT FOR LIBRALY SUCCESSFUL.</h2>
       <h3>PAYMENT REFERENCE ID: {referenceID}</h3>
       <Button onClick={dashboardHandler}>DASHBOARD</Button>

@@ -75,19 +75,27 @@ const Pricing = () => {
   const navigate = useNavigate();
   const [plan, setPlan] = useState('');
   const [razorKey, setRazorKey] = useState('');
-  const pricingSubmitHandler = async e => {
-    setPlan(e.target.id);
-    const { data } = await axios.get(`${server}/organisation/razorpaykey`);
-    setRazorKey(data.key);
-    dispatch(createOrganisationSubscription(plan));
+  const [buttonStatus, setButtonStatus] = useState(false);
+  const pricingSubmitHandler = e => {
+    setPlan(e.currentTarget.id);
+    dispatch(createOrganisationSubscription(e.currentTarget.id));
+    setButtonStatus(true);
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await axios.get(`${server}/organisation/razorpaykey`);
+      setRazorKey(data.key);
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (error) {
       toast.error(error);
       dispatch({ type: 'clearError' });
     }
-    if (subscriptionID) {
+    if (subscriptionID && buttonStatus) {
       const open = () => {
         let planAmount = 0;
         if (plan === 'Basic') {
@@ -132,6 +140,7 @@ const Pricing = () => {
     plan,
     razorKey,
     subscriptionID,
+    buttonStatus,
   ]);
 
   const unAuthenticatedHandler = () => {
@@ -139,7 +148,7 @@ const Pricing = () => {
   };
 
   return (
-    <>
+    <div style={{ margin: '6%' }}>
       <React.Fragment>
         <CssBaseline />
         <Typography
@@ -260,7 +269,7 @@ const Pricing = () => {
           </Grid>
         </Container>
       </React.Fragment>
-    </>
+    </div>
   );
 };
 

@@ -21,7 +21,7 @@ const AllMembersOrganisation = () => {
   }, [dispatch, members]);
 
   return (
-    <div>
+    <div style={{ margin: 'auto', width: '80%', marginTop: '8%' }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

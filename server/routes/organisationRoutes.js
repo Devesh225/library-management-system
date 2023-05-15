@@ -38,27 +38,23 @@ router
     );
 router
     .route("/organisation/update")
-    .put(
-        isAuthenticated,
-        authorizedSubscribers,
-        singleFileUpload,
-        updateOrganisationAdmin
-    );
+    .put(isAuthenticated, singleFileUpload, updateOrganisationAdmin);
 router.route("/organisation/login").post(organisationLogin);
 router.route("/organisation/logout").get(isAuthenticated, organisationLogout);
 router
     .route("/organisation/updatepassword")
-    .put(
-        isAuthenticated,
-        authorizedSubscribers,
-        updateOrganisationPasswordAdmin
-    ); // AUTHENTICATED
+    .put(isAuthenticated, updateOrganisationPasswordAdmin);
 router
     .route("/organisation/delete")
     .delete(isAuthenticated, authorizedSubscribers, deleteOrganisationAdmin);
 router
     .route("/organisation/new")
-    .post(singleFileUpload, createOrganisationAdmin);
+    .post(
+        isAuthenticated,
+        singleFileUpload,
+        authorizedSubscribers,
+        createOrganisationAdmin
+    );
 router
     .route("/organisation/removemember")
     .delete(isAuthenticated, authorizedSubscribers, removeMemberAdmin);

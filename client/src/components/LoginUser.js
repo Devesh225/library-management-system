@@ -139,7 +139,18 @@ const LoginUser = () => {
                 >
                   Sign in
                 </Button>
-                <Grid container justifyContent="flex-end">
+
+                <Grid
+                  sx={{
+                    textAlign: 'center',
+                    marginTop: '1rem',
+                  }}
+                >
+                  <Grid item sx={{ mb: 'none' }}>
+                    <Link href="/organisationlogin" variant="body2">
+                      Not An User? Organisation Login.
+                    </Link>
+                  </Grid>
                   <Grid item sx={{ mb: 'none' }}>
                     <Link href="/member/forgotpassword" variant="body2">
                       Forgot Password?

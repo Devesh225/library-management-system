@@ -36,6 +36,11 @@ import UpdateBookAdmin from './components/UpdateBookAdmin';
 import DeleteBookAdmin from './components/DeleteBookAdmin';
 import ShowAllOrganisations from './components/ShowAllOrganisations.js';
 import UpdateOrganisationSuperAdmin from './components/UpdateOrganisationSuperAdmin';
+import OrganisationProfile from './components/OrganisationProfile';
+import MemberProfile from './components/MemberProfile';
+import CreateNewOrganisationSuperAdmin from './components/CreateNewOrganisationSuperAdmin';
+import AccessRestricted from './components/AccessRestricted';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const {
@@ -65,7 +70,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (organisationError) {
+    if (organisationError && organisationError !== 'USER NOT LOGGED IN.') {
       toast.error(organisationError);
       dispatch({ type: 'clearError' });
     }
@@ -81,7 +86,7 @@ function App() {
       toast.success(paymentMessage);
       dispatch({ type: 'clearMessage' });
     }
-    if (memberError) {
+    if (memberError && memberError !== 'USER NOT LOGGED IN.') {
       toast.error(memberError);
       dispatch({ type: 'clearError' });
     }
@@ -127,13 +132,40 @@ function App() {
           ) : (
             <ResponsiveAppBar />
           )}
+
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={
+                    organisationIsAuthenticated || memberIsAuthenticated
+                  }
+                  redirect="/organisationlogin"
+                >
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/about" element={<About />} />
+            <Route
+              path="/organisation/restricted"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status !== 'active'
+                  }
+                  redirect="/organisation/me"
+                >
+                  <AccessRestricted />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/organisation/all"
               element={<ShowAllOrganisations />}
             />
+            <Route path="/organisation/dashboard" element={<Dashboard />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route
               path="/organisationregister"
@@ -165,7 +197,7 @@ function App() {
                   isAuthenticated={organisationIsAuthenticated}
                   redirect="/organisationlogin"
                 >
-                  <></>
+                  <OrganisationProfile />
                 </ProtectedRoute>
               }
             />
@@ -174,8 +206,10 @@ function App() {
               path="/organisation/books"
               element={
                 <ProtectedRoute
-                  isAuthenticated={organisationIsAuthenticated}
-                  redirect="/organisationlogin"
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status === 'active'
+                  }
+                  redirect="/organisation/restricted"
                 >
                   <ShowAllBooks />
                 </ProtectedRoute>
@@ -185,8 +219,10 @@ function App() {
               path="/organisation/book/add"
               element={
                 <ProtectedRoute
-                  isAuthenticated={organisationIsAuthenticated}
-                  redirect="/organisationlogin"
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status === 'active'
+                  }
+                  redirect="/organisation/restricted"
                 >
                   <AddBookAdmin />
                 </ProtectedRoute>
@@ -226,13 +262,24 @@ function App() {
               }
             />
             <Route
+              path="/organisation/new"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={organisationIsAuthenticated}
+                  redirect="/organisation/me"
+                >
+                  <CreateNewOrganisationSuperAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/member/me"
               element={
                 <ProtectedRoute
                   isAuthenticated={memberIsAuthenticated}
                   redirect="/userlogin"
                 >
-                  <></>
+                  <MemberProfile />
                 </ProtectedRoute>
               }
             />
@@ -347,8 +394,10 @@ function App() {
               path="/organisation/addmember"
               element={
                 <ProtectedRoute
-                  isAuthenticated={organisationIsAuthenticated}
-                  redirect="/organisationlogin"
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status === 'active'
+                  }
+                  redirect="/organisation/restricted"
                 >
                   <AddMemberOrganisation />
                 </ProtectedRoute>
@@ -358,8 +407,10 @@ function App() {
               path="/organisation/removemember"
               element={
                 <ProtectedRoute
-                  isAuthenticated={organisationIsAuthenticated}
-                  redirect="/organisationlogin"
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status === 'active'
+                  }
+                  redirect="/organisation/restricted"
                 >
                   <RemoveMemberOrganisation />
                 </ProtectedRoute>
@@ -369,8 +420,10 @@ function App() {
               path="/organisation/allmembers"
               element={
                 <ProtectedRoute
-                  isAuthenticated={organisationIsAuthenticated}
-                  redirect="/organisationlogin"
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status === 'active'
+                  }
+                  redirect="/organisation/restricted"
                 >
                   <AllMembersOrganisation />
                 </ProtectedRoute>

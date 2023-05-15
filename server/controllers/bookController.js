@@ -4,6 +4,7 @@ import { borrowedBooksModel } from "../models/borrowedBookModel.js";
 import { organisationModel } from "../models/organisationModel.js";
 import { userModel } from "../models/userModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const getAllBooksAdmin = catchAsyncError(async (req, res, next) => {
     const name = req.query.name || "";
@@ -77,7 +78,7 @@ export const addBookAdmin = catchAsyncError(async (req, res, next) => {
         return next(new ErrorHandler("PLEASE ENTER ALL FIELDS.", 400));
     }
 
-    if (availableCount > totalCapacity) {
+    if (Number(availableCount) > Number(totalCapacity)) {
         return next(
             new ErrorHandler(
                 "AVAILABILITY CANNOT EXCEED THE TOTAL CAPACITY OF THE PARTICULAR BOOK.",
@@ -134,6 +135,7 @@ export const addBookAdmin = catchAsyncError(async (req, res, next) => {
 
 export const issueBook = catchAsyncError(async (req, res, next) => {
     const memberID = req.member._id;
+    const member = await userModel.findById(memberID);
     const { bookID } = req.body;
     if (!bookID) {
         return next(new ErrorHandler("PLEASE SELECT THE BOOK CORRECTLY.", 400));
@@ -180,11 +182,26 @@ export const issueBook = catchAsyncError(async (req, res, next) => {
             book.book_waiting_queue = book.book_waiting_queue - 1;
         }
         book.save();
+
+        let issueDate = borrowedBook.borrowedBook_borrowed_date;
+        let returnDate = borrowedBook.borrowedBook_due_date;
+        let subject = "[ LIBRALY ] BOOK ISSUED.";
+
+        let message = `You have issued a book: ${
+            book.book_title
+        }.\n\nIssue Date: ${String(issueDate).substring(
+            0,
+            15
+        )}\n\nMax Return Date: ${String(returnDate).substring(0, 15)}`;
+
+        await sendEmail(member.user_email, subject, message);
+
         res.status(200).json({
             success: true,
             message: "BOOK ISSUED SUCCESSFULLY.",
             borrowedBook,
         });
+        return;
     } else {
         book.book_waiting_queue = book.book_waiting_queue + 1;
         book.save();
@@ -199,6 +216,7 @@ export const issueBook = catchAsyncError(async (req, res, next) => {
 
 export const returnBook = catchAsyncError(async (req, res, next) => {
     const memberID = req.member._id;
+    const member = await userModel.findById(memberID);
     const { bookID } = req.body;
     if (!bookID) {
         return next(new ErrorHandler("PLEASE SELECT THE BOOK CORRECTLY.", 400));
@@ -240,6 +258,22 @@ export const returnBook = catchAsyncError(async (req, res, next) => {
             (1000 * 60 * 60 * 24);
     }
     const lateFine = lateDays * 10; // 10 RUPEES PER DAY FINE
+
+    let issueDate = borrowedBook.borrowedBook_borrowed_date;
+    let returnDate = borrowedBook.borrowedBook_returned_date;
+    let subject = "[ LIBRALY ] BOOK ISSUED.";
+
+    let message = `You have returned a book: ${
+        book.book_title
+    }.\n\nIssue Date: ${String(issueDate).substring(
+        0,
+        15
+    )}\n\nReturn Date: ${String(returnDate).substring(
+        0,
+        15
+    )}\n\nLate Fine: Rs. ${lateFine}`;
+
+    await sendEmail(member.user_email, subject, message);
     res.status(200).json({
         success: true,
         lateFine,

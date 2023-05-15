@@ -11,7 +11,6 @@ import './Register.css';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { removeMember } from '../redux/actions/organisationAction';
-import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -48,17 +47,16 @@ const theme = createTheme({
 
 const ForgotPasswordOrg = () => {
   const [email, setEmail] = useState('');
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const removeMemberFormSubmitHandler = e => {
     e.preventDefault();
     dispatch(removeMember(email));
-    navigate('/organisation/me');
+    window.location.reload();
   };
 
   return (
-    <div className="register__main">
-      <div className="signup-container">
+    <div className="register__main" style={{ height: '50rem' }}>
+      <div className="signup-container" style={{ marginTop: '9rem' }}>
         <ThemeProvider theme={theme}>
           <Container component="main">
             <CssBaseline />

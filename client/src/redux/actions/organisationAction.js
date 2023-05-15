@@ -371,3 +371,21 @@ export const getOrgDetails = id => async dispatch => {
     });
   }
 };
+
+export const createOrganisationSuperAdmin = formData => async dispatch => {
+  try {
+    dispatch({ type: 'createOrganisationRequest' });
+
+    const { data } = await axios.post(`${server}/organisation/new`, formData, {
+      headers: { 'Content-type': 'multipart/form-data' },
+      withCredentials: true,
+    });
+
+    dispatch({ type: 'createOrganisationSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'createOrganisationFailure',
+      payload: error.response.data.message,
+    });
+  }
+};

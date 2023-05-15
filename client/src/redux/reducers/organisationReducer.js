@@ -227,6 +227,17 @@ export const organisationReducer = createReducer(
       state.loading = false;
       state.error = action.payload;
     },
+    createOrganisationRequest: state => {
+      state.loading = true;
+    },
+    createOrganisationSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+    },
+    createOrganisationFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     clearError: state => {
       state.error = null;
     },

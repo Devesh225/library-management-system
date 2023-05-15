@@ -62,14 +62,14 @@ const UpdateOrganisationSuperAdmin = () => {
     state => state.organisation?.updateorg
   );
 
-  const [name, setName] = useState(organisationDetails.organisation_name);
-  const [email, setEmail] = useState(organisationDetails.organisation_email);
+  const [name, setName] = useState(organisationDetails?.organisation_name);
+  const [email, setEmail] = useState(organisationDetails?.organisation_email);
   const [address, setAddress] = useState(
-    organisationDetails.organisation_address
+    organisationDetails?.organisation_address
   );
-  const [phone, setPhone] = useState(organisationDetails.organisation_phone);
+  const [phone, setPhone] = useState(organisationDetails?.organisation_phone);
   const [avatarPreview, setAvatarPreview] = useState(
-    organisationDetails?.organisation_logo.url
+    organisationDetails?.organisation_logo?.url
   );
   const [avatar, setAvatar] = useState();
   const navigate = useNavigate();

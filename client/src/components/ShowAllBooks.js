@@ -10,7 +10,16 @@ const ShowAllBooks = () => {
     dispatch(showAllBooks());
   }, [dispatch]);
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+    <div
+      style={{
+        display: 'grid',
+        marginTop: '8%',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        marginBottom: '5rem',
+        rowGap: '5rem',
+        marginLeft: '10rem',
+      }}
+    >
       {books && books.map(book => <BookCard book={book} key={book?._id} />)}
     </div>
   );

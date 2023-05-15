@@ -21,7 +21,13 @@ const ViewAllIssuedReturnedBooks = ({ issued, returned }) => {
     }
   }, [dispatch, issued, returned, borrowedBook]);
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        marginTop: '8%',
+      }}
+    >
       {issued
         ? issuedBooks &&
           issuedBooks.map((book, index) => (

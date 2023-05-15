@@ -16,8 +16,8 @@ router
     .route("/organisation/addbook")
     .post(
         isAuthenticated,
-        authorizedSubscribers,
         singleFileUpload,
+        authorizedSubscribers,
         addBookAdmin
     );
 

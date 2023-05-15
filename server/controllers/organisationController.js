@@ -39,7 +39,6 @@ export const getOrganisationProfile = catchAsyncError(
     }
 );
 
-// CHECK AND TEST THIS CONTROLLER WHEN YOU RETURN
 export const createOrganisationAdmin = catchAsyncError(
     async (req, res, next) => {
         const { name, address, email, phone, password } = req.body;
@@ -97,6 +96,18 @@ export const createOrganisationAdmin = catchAsyncError(
             organisation_password: password,
         });
 
+        if (!organisation) {
+            return next(
+                new ErrorHandler("INTERNAL SERVER ERROR, PLEASE TRY AGAIN", 400)
+            );
+        }
+
+        let subject = "THANK YOU FOR REGISTERING ON LIBRALY.";
+
+        let message = `Welcome to Libraly. We hope you will have a great time using Libraly and it will help you in managing your Library.\n\nORGANISATION ID: ${orgCount}\nPASSWORD: ${password}\n\n\nIf you have any doubts or suggestions, you can always write it out to us in the contact form, we would appreciate it.\n\nThanking You,\nLibraly.`;
+
+        await sendEmail(email, subject, message);
+
         sendToken(
             res,
             organisation,
@@ -104,8 +115,6 @@ export const createOrganisationAdmin = catchAsyncError(
             "ORGANISATION REGISTERED SUCCESSFULLY",
             200
         );
-
-        // TODO: MAIL THE ORGANISATION ID, PASSWORD AND OTHER DETAILS TO THE ORGANISATION EMAIL.
     }
 );
 
@@ -305,7 +314,11 @@ export const addMemberAdmin = catchAsyncError(async (req, res, next) => {
         );
     }
 
-    // TODO: EMAIL THE LOGIN CREDENTIALS TO THE MEMBER.
+    let subject = "YOU HAVE BEEN ADDED TO THIS ORGANISATION VIA LIBRALY.";
+
+    let message = `Welcome to Libraly. We hope you will have a great time using Libraly. You have been added by your organisation: ${organisation_name}.\n\nORGANISATION ID: ${organisation_id}\nMEMBER ID: ${user_id}\nPASSWORD: ${user_dob}\n\n\nIf you have any doubts or suggestions, you can always write it out to us in the contact form, we would appreciate it.\n\nThanking You,\nLibraly.`;
+
+    await sendEmail(user_email, subject, message);
 
     res.status(201).json({
         success: true,
@@ -472,7 +485,7 @@ export const organisationForgotPasswordAdmin = catchAsyncError(
 
         res.status(200).json({
             success: true,
-            message: `RESET TOKEN HAS BEEN SENT TO ${email}`,
+            message: `RESET LINK HAS BEEN SENT TO ${email}`,
         });
     }
 );

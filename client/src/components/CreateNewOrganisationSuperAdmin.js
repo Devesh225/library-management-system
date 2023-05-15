@@ -8,12 +8,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Register.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import defaultAvatar from '../assets/defaultAvatar.png';
 import AboutAvatar from './AboutAvatar';
-import { useDispatch } from 'react-redux';
-import { addMember } from '../redux/actions/organisationAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { createOrganisationSuperAdmin } from '../redux/actions/organisationAction';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 function Copyright(props) {
   return (
@@ -48,15 +49,26 @@ const theme = createTheme({
   },
 });
 
-const AddMemberOrganisation = () => {
+const CreateNewOrganisationSuperAdmin = () => {
   const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [dob, setDob] = useState('');
+  const [password, setPassword] = useState('');
   const [avatarPreview, setAvatarPreview] = useState(defaultAvatar);
   const [avatar, setAvatar] = useState();
 
+  const { message } = useSelector(state => state.organisation);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
+  });
 
   const avatarChangeHandler = e => {
     if (e.target.files[0]) {
@@ -69,18 +81,18 @@ const AddMemberOrganisation = () => {
       };
     }
   };
-  const navigate = useNavigate();
-  const addMemberFormSubmitHandler = e => {
+  const addOrganisationFormSubmitHandler = e => {
     e.preventDefault();
     const myForm = new FormData();
-    myForm.append('user_name', name);
-    myForm.append('user_email', email);
-    myForm.append('user_phone', phone);
-    myForm.append('user_dob', dob);
+    myForm.append('name', name);
+    myForm.append('address', address);
+    myForm.append('email', email);
+    myForm.append('phone', phone);
+    myForm.append('password', password);
     myForm.append('file', avatar);
-    dispatch(addMember(myForm));
+    dispatch(createOrganisationSuperAdmin(myForm));
+    navigate('/organisation/all');
     window.location.reload();
-    navigate('/organisation/allmembers');
   };
 
   return (
@@ -102,13 +114,13 @@ const AddMemberOrganisation = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Add Member
+                Create Organisation
               </Typography>
               <Box
                 component="form"
                 noValidate
                 sx={{ mt: 3 }}
-                onSubmit={addMemberFormSubmitHandler}
+                onSubmit={addOrganisationFormSubmitHandler}
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -121,10 +133,21 @@ const AddMemberOrganisation = () => {
                       fullWidth
                       size="small"
                       id="name"
-                      placeholder="Member Name"
+                      placeholder="Organisation Name"
                       name="name"
                       onChange={e => setName(e.target.value)}
-                      autoComplete="family-name"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      className="signup-input"
+                      required
+                      fullWidth
+                      size="small"
+                      id="name"
+                      placeholder="Organisation Address"
+                      name="name"
+                      onChange={e => setAddress(e.target.value)}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -137,7 +160,6 @@ const AddMemberOrganisation = () => {
                       placeholder="Email Address"
                       name="email"
                       onChange={e => setEmail(e.target.value)}
-                      autoComplete="email"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -150,7 +172,6 @@ const AddMemberOrganisation = () => {
                       placeholder="Phone"
                       type="number"
                       id="phone"
-                      autoComplete="Phone"
                       onChange={e => setPhone(e.target.value)}
                     />
                   </Grid>
@@ -160,11 +181,11 @@ const AddMemberOrganisation = () => {
                       size="small"
                       required
                       fullWidth
-                      name="dob"
-                      placeholder="Date Of Birth (DDMMYYYY)"
-                      onChange={e => setDob(e.target.value)}
-                      type="number"
-                      id="dob"
+                      name="password"
+                      placeholder="Password"
+                      onChange={e => setPassword(e.target.value)}
+                      type="password"
+                      id="password"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -201,7 +222,7 @@ const AddMemberOrganisation = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Add Member
+                  Create Organisation
                 </Button>
               </Box>
             </Box>
@@ -213,4 +234,4 @@ const AddMemberOrganisation = () => {
   );
 };
 
-export default AddMemberOrganisation;
+export default CreateNewOrganisationSuperAdmin;
