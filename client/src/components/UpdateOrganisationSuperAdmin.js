@@ -54,25 +54,31 @@ const UpdateOrganisationSuperAdmin = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
+  const { organisations } = useSelector(state => state.organisation);
+
+  let selectedOrganisation = null;
+  organisations.forEach(organisation => {
+    if (organisation._id === id) {
+      selectedOrganisation = organisation;
+    }
+  });
+
+  const [name, setName] = useState(selectedOrganisation?.organisation_name);
+  const [email, setEmail] = useState(selectedOrganisation?.organisation_email);
+  const [address, setAddress] = useState(
+    selectedOrganisation?.organisation_address
+  );
+  const [phone, setPhone] = useState(selectedOrganisation?.organisation_phone);
+  const [avatarPreview, setAvatarPreview] = useState(
+    selectedOrganisation?.organisation_logo?.url
+  );
+  const [avatar, setAvatar] = useState();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(getOrgDetails(id));
   }, [dispatch, id]);
-
-  const organisationDetails = useSelector(
-    state => state.organisation?.updateorg
-  );
-
-  const [name, setName] = useState(organisationDetails?.organisation_name);
-  const [email, setEmail] = useState(organisationDetails?.organisation_email);
-  const [address, setAddress] = useState(
-    organisationDetails?.organisation_address
-  );
-  const [phone, setPhone] = useState(organisationDetails?.organisation_phone);
-  const [avatarPreview, setAvatarPreview] = useState(
-    organisationDetails?.organisation_logo?.url
-  );
-  const [avatar, setAvatar] = useState();
-  const navigate = useNavigate();
 
   const avatarChangeHandler = e => {
     if (e.target.files[0]) {

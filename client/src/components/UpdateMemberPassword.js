@@ -60,7 +60,10 @@ const UpdateMemberPassword = () => {
   };
 
   return (
-    <div className="register__main" style={{ height: '50rem' }}>
+    <div
+      className="register__main"
+      style={{ height: '50rem', backgroundSize: '100%' }}
+    >
       <div className="signup-container" style={{ marginTop: '9rem' }}>
         <ThemeProvider theme={theme}>
           <Container component="main">

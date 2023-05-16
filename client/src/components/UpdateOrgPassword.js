@@ -9,7 +9,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Register.css';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateOrganisationPassword } from '../redux/actions/organisationAction';
 import { useNavigate } from 'react-router-dom';
 
@@ -53,6 +53,10 @@ const UpdateOrgPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { organisation_id } = useSelector(
+    state => state.organisation?.organisation
+  );
+
   const updatePasswordFormSubmitHandler = e => {
     e.preventDefault();
     dispatch(
@@ -62,7 +66,10 @@ const UpdateOrgPassword = () => {
   };
 
   return (
-    <div className="register__main" style={{ height: '50rem' }}>
+    <div
+      className="register__main"
+      style={{ height: '50rem', backgroundSize: '100%' }}
+    >
       <div className="signup-container" style={{ marginTop: '9rem' }}>
         <ThemeProvider theme={theme}>
           <Container component="main">
@@ -80,7 +87,9 @@ const UpdateOrgPassword = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Update Organisation Password
+                {organisation_id === 0
+                  ? 'Update Super Admin Password'
+                  : 'Update Organisation Password'}
               </Typography>
               <Box
                 component="form"

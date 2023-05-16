@@ -17,8 +17,7 @@ import axios from 'axios';
 import { server } from '../redux/store';
 import toast from 'react-hot-toast';
 import logo from '../assets/logo.png';
-// import LoadingButton from '@mui/lab/LoadingButton';
-// import Footer from "../Footer";
+import './Register.css';
 
 const tiers = [
   {
@@ -147,128 +146,134 @@ const Pricing = () => {
     navigate('/organisationlogin');
   };
 
-  return (
-    <div style={{ margin: '6%' }}>
-      <React.Fragment>
-        <CssBaseline />
-        <Typography
-          variant="h1"
-          sx={{
-            color: '#FC7300',
-            fontFamily: 'Montserrat',
-            fontWeight: 700,
-            ml: 5,
-            mt: 5,
-          }}
-        >
-          Pricing
-        </Typography>
-        <Box
-          sx={{
-            backgroundColor: '#FC7300',
-            width: 500,
-            ml: 5,
-            mt: 0,
-            height: 20,
-          }}
-        />
-        <Box
-          sx={{
-            backgroundColor: '#FC7300',
-            width: 400,
-            ml: 5,
-            mt: 2,
-            height: 20,
-          }}
-        />
+  const style = {
+    margin: '6%',
+  };
 
-        <Container maxWidth="md" component="main" sx={{ mb: 10, mt: 15 }}>
-          <Grid container spacing={5} alignItems="flex-end">
-            {tiers.map(tier => (
-              <Grid
-                item
-                key={tier.title}
-                xs={12}
-                sm={tier.title === 'PRO' ? 12 : 6}
-                md={4}
-              >
-                <Card>
-                  <CardHeader
-                    title={tier.title}
-                    subheader={tier.subheader}
-                    titleTypographyProps={{
-                      align: 'center',
-                    }}
-                    action={tier.title === 'Annual' ? <StarIcon /> : null}
-                    subheaderTypographyProps={{
-                      align: 'center',
-                    }}
-                    sx={{
-                      backgroundColor: theme =>
-                        theme.palette.mode === 'light'
-                          ? theme.palette.grey[200]
-                          : theme.palette.grey[700],
-                    }}
-                  />
-                  <CardContent>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'baseline',
-                        mb: 2,
+  return (
+    <div className="register__main" style={{ backgroundSize: '100%' }}>
+      <div style={organisation ? { style } : null}>
+        <React.Fragment>
+          <CssBaseline />
+          <Typography
+            variant="h1"
+            sx={{
+              color: '#FC7300',
+              fontFamily: 'Montserrat',
+              fontWeight: 700,
+              ml: 5,
+              mt: 5,
+            }}
+          >
+            Pricing
+          </Typography>
+          <Box
+            sx={{
+              backgroundColor: '#FC7300',
+              width: 500,
+              ml: 5,
+              mt: 0,
+              height: 20,
+            }}
+          />
+          <Box
+            sx={{
+              backgroundColor: '#FC7300',
+              width: 400,
+              ml: 5,
+              mt: 2,
+              height: 20,
+            }}
+          />
+
+          <Container maxWidth="md" component="main" sx={{ mb: 10, mt: 15 }}>
+            <Grid container spacing={5} alignItems="flex-end">
+              {tiers.map(tier => (
+                <Grid
+                  item
+                  key={tier.title}
+                  xs={12}
+                  sm={tier.title === 'PRO' ? 12 : 6}
+                  md={4}
+                >
+                  <Card>
+                    <CardHeader
+                      title={tier.title}
+                      subheader={tier.subheader}
+                      titleTypographyProps={{
+                        align: 'center',
                       }}
-                    >
-                      <Typography
-                        component="h2"
-                        variant="h3"
-                        color="text.primary"
+                      action={tier.title === 'Annual' ? <StarIcon /> : null}
+                      subheaderTypographyProps={{
+                        align: 'center',
+                      }}
+                      sx={{
+                        backgroundColor: theme =>
+                          theme.palette.mode === 'light'
+                            ? theme.palette.grey[200]
+                            : theme.palette.grey[700],
+                      }}
+                    />
+                    <CardContent>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'baseline',
+                          mb: 2,
+                        }}
                       >
-                        ₹{tier.price}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'baseline',
-                        mb: 2,
-                      }}
-                    ></Box>
-                    <ul>
-                      {tier.description.map(line => (
                         <Typography
-                          component="li"
-                          variant="subtitle1"
-                          align="center"
-                          key={line}
+                          component="h2"
+                          variant="h3"
+                          color="text.primary"
                         >
-                          {line}
+                          ₹{tier.price}
                         </Typography>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      fullWidth
-                      id={tier.title}
-                      variant={tier.buttonVariant}
-                      onClick={
-                        isAuthenticated
-                          ? pricingSubmitHandler
-                          : unAuthenticatedHandler
-                      }
-                      disabled={loading}
-                    >
-                      {tier.buttonText}
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </React.Fragment>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'baseline',
+                          mb: 2,
+                        }}
+                      ></Box>
+                      <ul>
+                        {tier.description.map(line => (
+                          <Typography
+                            component="li"
+                            variant="subtitle1"
+                            align="center"
+                            key={line}
+                          >
+                            {line}
+                          </Typography>
+                        ))}
+                      </ul>
+                    </CardContent>
+                    <CardActions>
+                      <Button
+                        fullWidth
+                        id={tier.title}
+                        variant={tier.buttonVariant}
+                        onClick={
+                          isAuthenticated
+                            ? pricingSubmitHandler
+                            : unAuthenticatedHandler
+                        }
+                        disabled={loading}
+                      >
+                        {tier.buttonText}
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </React.Fragment>
+      </div>
     </div>
   );
 };

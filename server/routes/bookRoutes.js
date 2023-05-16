@@ -11,7 +11,7 @@ import singleFileUpload from "../middlewares/multer.js";
 
 const router = express.Router();
 
-router.route("/book/all").get(isAuthenticated, getAllBooksAdmin); // ADMIN
+router.route("/book/all/:keyword").get(isAuthenticated, getAllBooksAdmin); // ADMIN
 router
     .route("/organisation/addbook")
     .post(

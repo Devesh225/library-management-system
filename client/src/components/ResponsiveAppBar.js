@@ -63,6 +63,18 @@ function ResponsiveAppBar() {
               About
             </NavLink>
             <NavLink
+              to="/contact"
+              style={{
+                color: '#fff',
+                textDecoration: 'none',
+                paddingRight: '1%',
+                paddingLeft: '1%',
+                fontFamily: 'Montserrat',
+              }}
+            >
+              Contact
+            </NavLink>
+            <NavLink
               to="/pricing"
               style={{
                 color: '#fff',

@@ -87,7 +87,7 @@ const UpdateMemberDetails = () => {
   };
 
   return (
-    <div className="register__main">
+    <div className="register__main" style={{ backgroundSize: '100%' }}>
       <div className="signup-container">
         <ThemeProvider theme={theme}>
           <Container component="main">
@@ -105,7 +105,7 @@ const UpdateMemberDetails = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Update Member Details
+                Update Details
               </Typography>
               <Box
                 component="form"

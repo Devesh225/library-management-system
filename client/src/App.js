@@ -41,6 +41,7 @@ import MemberProfile from './components/MemberProfile';
 import CreateNewOrganisationSuperAdmin from './components/CreateNewOrganisationSuperAdmin';
 import AccessRestricted from './components/AccessRestricted';
 import Dashboard from './components/Dashboard';
+import Contact from './components/Contact';
 
 function App() {
   const {
@@ -158,6 +159,7 @@ function App() {
               }
             />
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route
               path="/organisation/restricted"
               element={

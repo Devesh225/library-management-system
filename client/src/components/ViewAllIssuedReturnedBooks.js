@@ -4,6 +4,7 @@ import {
   viewAllIssuedBooks,
   viewAllReturnedBooks,
 } from '../redux/actions/bookAction';
+import { Typography } from '@mui/material';
 import IssueBookCard from './IssueBookCard';
 import './Register.css';
 
@@ -22,11 +23,25 @@ const ViewAllIssuedReturnedBooks = ({ issued, returned }) => {
     }
   }, [dispatch, issued, returned, borrowedBook]);
   return (
-    <div className="register__main" style={{ height: '50rem' }}>
+    <div
+      className="register__main"
+      style={{ height: '50rem', backgroundSize: '100%' }}
+    >
+      <div style={{ marginTop: '8%' }} className="signup-container">
+        <Typography
+          sx={{
+            textAlign: 'center',
+            color: 'orange',
+            fontSize: '3rem',
+            padding: '1rem',
+          }}
+        >
+          {issued ? 'ISSUED BOOKS' : 'RETURNED BOOKS'}
+        </Typography>
+      </div>
       <div
         style={{
           display: 'grid',
-          marginTop: '8%',
           gridTemplateColumns: '1fr 1fr 1fr',
           marginBottom: '5rem',
           rowGap: '5rem',

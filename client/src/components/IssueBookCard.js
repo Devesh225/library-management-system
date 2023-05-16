@@ -79,11 +79,21 @@ const IssueBookCard = ({ issueDetails, bookDetails }) => {
       </CardActionArea>
       <CardActions>
         {issueDetails?.borrowedBook_is_returned ? (
-          <Button onClick={reissueBookHandler} size="small" color="primary">
+          <Button
+            onClick={reissueBookHandler}
+            size="small"
+            color="primary"
+            variant="contained"
+          >
             REISSUE BOOK
           </Button>
         ) : (
-          <Button onClick={returnBookHandler} size="small" color="primary">
+          <Button
+            onClick={returnBookHandler}
+            size="small"
+            color="primary"
+            variant="contained"
+          >
             RETURN BOOK
           </Button>
         )}

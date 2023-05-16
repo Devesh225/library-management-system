@@ -84,7 +84,7 @@ const AddMemberOrganisation = () => {
   };
 
   return (
-    <div className="register__main">
+    <div className="register__main" style={{ backgroundSize: '100%' }}>
       <div className="signup-container">
         <ThemeProvider theme={theme}>
           <Container component="main">

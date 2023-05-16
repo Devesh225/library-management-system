@@ -94,7 +94,7 @@ const AddBookAdmin = () => {
   };
 
   return (
-    <div className="register__main">
+    <div className="register__main" style={{ backgroundSize: '100%' }}>
       <div className="signup-container">
         <ThemeProvider theme={theme}>
           <Container component="main">
@@ -112,7 +112,7 @@ const AddBookAdmin = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Add Book Organisation
+                Add Book
               </Typography>
               <Box
                 component="form"

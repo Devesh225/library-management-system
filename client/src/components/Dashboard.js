@@ -89,7 +89,10 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="register__main" style={{ height: '125rem' }}>
+    <div
+      className="register__main"
+      style={{ height: '125rem', backgroundSize: '100%' }}
+    >
       <div style={{ margin: '8%' }}>
         <Box
           sx={{

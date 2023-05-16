@@ -7,7 +7,7 @@ const OrganisationProfile = () => {
   const { organisation } = useSelector(state => state.organisation);
 
   return (
-    <div className="register__main">
+    <div className="register__main" style={{ backgroundSize: '100%' }}>
       <Box
         sx={{
           margin: '6%',

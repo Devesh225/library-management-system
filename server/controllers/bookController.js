@@ -7,10 +7,13 @@ import ErrorHandler from "../utils/errorHandler.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 export const getAllBooksAdmin = catchAsyncError(async (req, res, next) => {
-    const name = req.query.name || "";
-    const author = req.query.author || "";
-    const category = req.query.category || "";
-
+    // const name = req.query.name || "";
+    // const author = req.query.author || "";
+    // const category = req.query.category || "";
+    let { keyword } = req.params;
+    if (keyword === "all") {
+        keyword = "";
+    }
     let orgID = null;
 
     if (req.organisation) {
@@ -26,17 +29,17 @@ export const getAllBooksAdmin = catchAsyncError(async (req, res, next) => {
     const books = await bookModel.find({
         organisation_id: orgID,
         book_title: {
-            $regex: name,
+            $regex: keyword,
             $options: "i",
         },
-        book_author: {
-            $regex: author,
-            $options: "i",
-        },
-        book_subject: {
-            $regex: category,
-            $options: "i",
-        },
+        // book_author: {
+        //     $regex: author,
+        //     $options: "i",
+        // },
+        // book_subject: {
+        //     $regex: category,
+        //     $options: "i",
+        // },
     });
 
     return res.status(200).json({

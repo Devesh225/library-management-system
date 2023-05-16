@@ -1,11 +1,13 @@
 import { server } from '../store';
 import axios from 'axios';
 
-export const showAllBooks = () => async dispatch => {
+export const showAllBooks = keyword => async dispatch => {
   try {
     dispatch({ type: 'showAllBooksRequest' });
-
-    const { data } = await axios.get(`${server}/book/all`, {
+    if (keyword === '') {
+      keyword = 'all';
+    }
+    const { data } = await axios.get(`${server}/book/all/${keyword}`, {
       headers: { 'Content-type': 'application/json' },
       withCredentials: true,
     });

@@ -49,6 +49,7 @@ const theme = createTheme({
 
 const UpdateOrgDetails = () => {
   const {
+    organisation_id,
     organisation_name,
     organisation_email,
     organisation_address,
@@ -91,7 +92,7 @@ const UpdateOrgDetails = () => {
   };
 
   return (
-    <div className="register__main">
+    <div className="register__main" style={{ backgroundSize: '100%' }}>
       <div className="signup-container">
         <ThemeProvider theme={theme}>
           <Container component="main">
@@ -109,7 +110,9 @@ const UpdateOrgDetails = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Update Organisation Details
+                {organisation_id === 0
+                  ? 'Update Super Admin Details'
+                  : 'Update Organisation Details'}
               </Typography>
               <Box
                 component="form"

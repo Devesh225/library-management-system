@@ -89,11 +89,7 @@ const BookCard = ({ book }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        {book?.book_available_copies === 1 ? (
-          <Button onClick={issueBookHandler} size="small" color="primary">
-            ADD TO WAITLIST
-          </Button>
-        ) : organisation ? (
+        {organisation ? (
           <Grid sx={{ margin: 'auto' }}>
             <Button
               onClick={updateBookHandler}
@@ -113,6 +109,10 @@ const BookCard = ({ book }) => {
               DELETE
             </Button>
           </Grid>
+        ) : book?.book_available_copies === 1 ? (
+          <Button onClick={issueBookHandler} size="small" color="primary">
+            ADD TO WAITLIST
+          </Button>
         ) : (
           <Button
             onClick={issueBookHandler}

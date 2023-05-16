@@ -55,7 +55,10 @@ const ForgotPasswordOrg = () => {
   };
 
   return (
-    <div className="register__main" style={{ height: '50rem' }}>
+    <div
+      className="register__main"
+      style={{ height: '50rem', backgroundSize: '100%' }}
+    >
       <div className="signup-container" style={{ marginTop: '9rem' }}>
         <ThemeProvider theme={theme}>
           <Container component="main">
@@ -73,7 +76,7 @@ const ForgotPasswordOrg = () => {
                 className="signup-heading"
                 sx={{ mt: 5, mb: 2, color: 'primary.main' }}
               >
-                Remove Member Organisation
+                Remove Member
               </Typography>
               <Box
                 component="form"
