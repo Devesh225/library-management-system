@@ -12,7 +12,7 @@ import { bookModel } from "../models/bookModel.js";
 export const getAllOrganisationsAdmin = catchAsyncError(
     async (req, res, next) => {
         const organisations = await organisationModel.find();
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             organisations,
         });
@@ -23,20 +23,18 @@ export const getOrganisationProfile = catchAsyncError(
     async (req, res, next) => {
         let organisation = null;
         if (!req.organisation) {
-            res.status(200).json({
+            return res.status(200).json({
                 success: false,
             });
-            return;
         } else {
             organisation = await organisationModel.findById(
                 req.organisation._id
             );
         }
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             organisation,
         });
-        return;
     }
 );
 
@@ -147,7 +145,8 @@ export const organisationLogin = catchAsyncError(async (req, res, next) => {
 });
 
 export const organisationLogout = catchAsyncError(async (req, res, next) => {
-    res.status(200)
+    return res
+        .status(200)
         .cookie("token", null, {
             expires: new Date(Date.now()),
             httpOnly: true,
@@ -209,7 +208,7 @@ export const updateOrganisationAdmin = catchAsyncError(
 
         await organisation.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "ORGANISATION UPDATED SUCCESSFULLY.",
             organisation,
@@ -321,7 +320,7 @@ export const addMemberAdmin = catchAsyncError(async (req, res, next) => {
 
     await sendEmail(user_email, subject, message);
 
-    res.status(201).json({
+    return res.status(201).json({
         success: true,
         member,
         message: "MEMBER ADDED SUCCESSFULLY.",
@@ -359,7 +358,7 @@ export const updateOrganisationPasswordAdmin = catchAsyncError(
 
         await organisation.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "PASSWORD UPDATED SUCCESSFULLY.",
         });
@@ -393,7 +392,7 @@ export const removeMemberAdmin = catchAsyncError(async (req, res, next) => {
 
     await userModel.remove({ user_email: email });
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "MEMBER REMOVED SUCCESSFULLY.",
     });
@@ -417,7 +416,7 @@ export const searchSingleMemberWithId = catchAsyncError(
             );
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             member,
         });
@@ -432,7 +431,7 @@ export const getSingleMemberDetails = catchAsyncError(
                 new ErrorHandler("MEMBER WITH THE ID DOES NOT EXIST", 401)
             );
         }
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             member,
         });
@@ -445,7 +444,7 @@ export const deleteOrganisationAdmin = catchAsyncError(
 
         await organisationModel.findByIdAndDelete(organisation._id);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "ORGANISATION DELETED SUCCESSFULLY.",
         });
@@ -484,7 +483,7 @@ export const organisationForgotPasswordAdmin = catchAsyncError(
 
         await sendEmail(email, subject, message);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: `RESET LINK HAS BEEN SENT TO ${email}`,
         });
@@ -519,7 +518,7 @@ export const organisationResetPasswordAdmin = catchAsyncError(
 
         await organisation.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "PASSWORD CHANGED SUCCESSFULLY.",
         });
@@ -531,7 +530,7 @@ export const getAllMembersAdmin = catchAsyncError(async (req, res, next) => {
     const members = await userModel.find({
         organisation_id: organisation.organisation_id,
     });
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         members,
     });
@@ -543,7 +542,7 @@ export const deleteOrganisationSuperAdmin = catchAsyncError(
 
         await organisationModel.findByIdAndDelete(id);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "ORGANISATION DELETED SUCCESSFULLY.",
         });
@@ -598,7 +597,7 @@ export const updateOrganisationSuperAdmin = catchAsyncError(
 
         await organisation.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "ORGANISATION UPDATED SUCCESSFULLY.",
         });
@@ -614,7 +613,7 @@ export const getOrganisationProfileById = catchAsyncError(
                 new ErrorHandler("INTERNAL SERVER ERROR, PLEASE TRY AGAIN", 400)
             );
         }
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             updateorg,
         });
@@ -623,13 +622,29 @@ export const getOrganisationProfileById = catchAsyncError(
 
 export const getTotalBooksSuperAdmin = catchAsyncError(
     async (req, res, next) => {
-        console.log("INSIDE");
         const books = await bookModel.find();
+        let outOfStockBooks = 0;
+        books.forEach((book) => {
+            if (book.book_waiting_queue) {
+                outOfStockBooks = outOfStockBooks + 1;
+            }
+        });
         let totalBooks = books.length;
-        console.log(books.length);
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             totalBooks,
+            outOfStockBooks,
+        });
+    }
+);
+
+export const getTotalMembersSuperAdmin = catchAsyncError(
+    async (req, res, next) => {
+        const members = await userModel.find();
+        const totalMembers = members.length;
+        return res.status(200).json({
+            success: true,
+            totalMembers,
         });
     }
 );

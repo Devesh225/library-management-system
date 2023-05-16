@@ -28,11 +28,18 @@ const IssueBookCard = ({ issueDetails, bookDetails }) => {
     navigate('/book/issued');
   };
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card
+      sx={{
+        maxWidth: 350,
+        backgroundColor: 'orange',
+        borderRadius: '5%',
+        border: '5px solid orange',
+      }}
+    >
       <CardActionArea>
         <CardMedia
           component="img"
-          height="140"
+          height="200"
           image={bookDetails?.book_cover?.url}
           alt={bookDetails?.book_title}
         />

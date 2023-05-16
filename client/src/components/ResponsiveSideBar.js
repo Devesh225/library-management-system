@@ -96,12 +96,14 @@ import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MuiDrawer from '@mui/material/Drawer';
+import DeleteIcon from '@mui/icons-material/Delete';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import BookIcon from '@mui/icons-material/Book';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -110,12 +112,16 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import SearchIcon from '@mui/icons-material/Search';
+
+import PasswordIcon from '@mui/icons-material/Password';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-
+import Person2Icon from '@mui/icons-material/Person2';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { organisationLogout } from '../redux/actions/organisationAction';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -189,42 +195,42 @@ const Drawer = styled(MuiDrawer, {
 const NavList = [
   {
     text: 'Organisation Profile',
-    icon: <SearchIcon />,
+    icon: <Person2Icon />,
     route: '/organisation/me',
   },
   {
     text: 'Update Organisation Details',
-    icon: <SearchIcon />,
+    icon: <EditIcon />,
     route: '/organisation/update',
   },
   {
     text: 'Update Organisation Password',
-    icon: <MenuBookIcon />,
+    icon: <PasswordIcon />,
     route: '/organisation/updatepassword',
   },
   {
     text: 'Add Member',
-    icon: <AccountCircleIcon />,
+    icon: <AddBoxIcon />,
     route: '/organisation/addmember',
   },
   {
     text: 'Remove Member',
-    icon: <AccountCircleIcon />,
+    icon: <DeleteIcon />,
     route: '/organisation/removemember',
   },
   {
     text: 'All Members List',
-    icon: <AccountCircleIcon />,
+    icon: <MenuBookIcon />,
     route: '/organisation/allmembers',
   },
   {
     text: 'Show All Books',
-    icon: <AccountCircleIcon />,
+    icon: <LibraryBooksIcon />,
     route: '/organisation/books',
   },
   {
     text: 'Add New Book',
-    icon: <AccountCircleIcon />,
+    icon: <BookIcon />,
     route: '/organisation/book/add',
   },
 ];
@@ -232,12 +238,12 @@ const NavList = [
 const superAdminNavList = [
   {
     text: 'Profile',
-    icon: <SearchIcon />,
+    icon: <Person2Icon />,
     route: '/organisation/me',
   },
   {
     text: 'View Statistics',
-    icon: <MenuBookIcon />,
+    icon: <DashboardIcon />,
     route: '/organisation/dashboard',
   },
   {
@@ -247,17 +253,17 @@ const superAdminNavList = [
   },
   {
     text: 'Update Details',
-    icon: <SearchIcon />,
+    icon: <EditIcon />,
     route: '/organisation/update',
   },
   {
     text: 'Update Password',
-    icon: <MenuBookIcon />,
+    icon: <PasswordIcon />,
     route: '/organisation/updatepassword',
   },
   {
     text: 'Add New Organisation',
-    icon: <MenuBookIcon />,
+    icon: <AddBoxIcon />,
     route: '/organisation/new',
   },
 ];
@@ -293,7 +299,11 @@ export default function MiniDrawer() {
   return (
     <Box>
       <CssBaseline />
-      <AppBar style={{ background: '#1769aa' }} position="fixed" open={open}>
+      <AppBar
+        style={{ background: 'rgb(252, 115, 0)' }}
+        position="fixed"
+        open={open}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -317,17 +327,16 @@ export default function MiniDrawer() {
                 ?.organisation_subscription?.status === 'active' ? null : (
               <Button
                 type="submit"
-                variant="contained"
                 onClick={pricingSubmitHandler}
+                sx={{ color: '#fff' }}
               >
                 PRICING
               </Button>
             )}
             <Button
               type="submit"
-              variant="contained"
               onClick={logoutHandler}
-              sx={{ marginLeft: '15px' }}
+              sx={{ marginLeft: '15px', color: '#fff' }}
             >
               LOGOUT
             </Button>

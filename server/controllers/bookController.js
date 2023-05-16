@@ -39,7 +39,7 @@ export const getAllBooksAdmin = catchAsyncError(async (req, res, next) => {
         },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         books,
     });
@@ -126,7 +126,7 @@ export const addBookAdmin = catchAsyncError(async (req, res, next) => {
         book_total_copies: totalCapacity,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         book,
         message: "BOOK ADDED SUCCESSFULLY.",
@@ -196,12 +196,11 @@ export const issueBook = catchAsyncError(async (req, res, next) => {
 
         await sendEmail(member.user_email, subject, message);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "BOOK ISSUED SUCCESSFULLY.",
             borrowedBook,
         });
-        return;
     } else {
         book.book_waiting_queue = book.book_waiting_queue + 1;
         book.save();
@@ -274,7 +273,7 @@ export const returnBook = catchAsyncError(async (req, res, next) => {
     )}\n\nLate Fine: Rs. ${lateFine}`;
 
     await sendEmail(member.user_email, subject, message);
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         lateFine,
         message: "BOOK RETURNED SUCCESSFULLY.",
@@ -300,7 +299,7 @@ export const viewCurrentlyIssuedBooks = catchAsyncError(
             books.push(book);
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             books,
             issuedBooks,
@@ -326,7 +325,7 @@ export const viewReturnedBooksHistory = catchAsyncError(
             const book = await bookModel.findById(id);
             books.push(book);
         }
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             books,
             returnedBooks,
@@ -416,7 +415,7 @@ export const updateBookAdmin = catchAsyncError(async (req, res, next) => {
 
     await book.save();
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "BOOK UPDATED SUCCESSFULLY.",
         book,
@@ -431,7 +430,7 @@ export const deleteBookAdmin = catchAsyncError(async (req, res, next) => {
 
     await bookModel.remove({ _id: bookID });
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "BOOK REMOVED SUCCESSFULLY.",
     });
@@ -456,7 +455,7 @@ export const recommendedBooksMember = catchAsyncError(
             organisation_id: orgID,
             book_subject: { $in: uniqueCategories },
         });
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             recommendedBooks,
         });
@@ -469,7 +468,7 @@ export const getBookDetails = catchAsyncError(async (req, res, next) => {
     if (!book) {
         return next(new ErrorHandler("BOOK DOESN'T EXIST", 400));
     }
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         book,
     });

@@ -389,3 +389,39 @@ export const createOrganisationSuperAdmin = formData => async dispatch => {
     });
   }
 };
+
+export const getAllBooksSuperAdmin = () => async dispatch => {
+  try {
+    dispatch({ type: 'allBooksRequest' });
+
+    const { data } = await axios.get(`${server}/organisation/allbooks`, {
+      headers: { 'Content-type': 'application/json' },
+      withCredentials: true,
+    });
+
+    dispatch({ type: 'allBooksSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'allBooksFailure',
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getAllMembersSuperAdmin = () => async dispatch => {
+  try {
+    dispatch({ type: 'allMembersSuperAdminRequest' });
+
+    const { data } = await axios.get(`${server}/organisation/totalmembers`, {
+      headers: { 'Content-type': 'application/json' },
+      withCredentials: true,
+    });
+
+    dispatch({ type: 'allMembersSuperAdminSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'allMembersSuperAdminFailure',
+      payload: error.response.data.message,
+    });
+  }
+};

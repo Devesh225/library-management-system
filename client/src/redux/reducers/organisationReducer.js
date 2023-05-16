@@ -238,6 +238,29 @@ export const organisationReducer = createReducer(
       state.loading = false;
       state.error = action.payload;
     },
+    allBooksRequest: state => {
+      state.loading = true;
+    },
+    allBooksSuccess: (state, action) => {
+      state.loading = false;
+      state.totalBooks = action.payload.totalBooks;
+      state.outOfStockBooks = action.payload.outOfStockBooks;
+    },
+    allBooksFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    allMembersSuperAdminRequest: state => {
+      state.loading = true;
+    },
+    allMembersSuperAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.totalMembers = action.payload.totalMembers;
+    },
+    allMembersSuperAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     clearError: state => {
       state.error = null;
     },

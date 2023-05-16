@@ -171,21 +171,26 @@ import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Person2Icon from '@mui/icons-material/Person2';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import EditIcon from '@mui/icons-material/Edit';
+import PasswordIcon from '@mui/icons-material/Password';
+
 import ListItemText from '@mui/material/ListItemText';
 import SearchIcon from '@mui/icons-material/Search';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 import { Link, Outlet } from 'react-router-dom';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useDispatch } from 'react-redux';
 import { memberLogout } from '../redux/actions/memberAction';
 
@@ -259,32 +264,32 @@ const Drawer = styled(MuiDrawer, {
 const NavList = [
   {
     text: 'Member Profile',
-    icon: <SearchIcon />,
+    icon: <Person2Icon />,
     route: '/member/me',
   },
   {
     text: 'Update Member Details',
-    icon: <SearchIcon />,
+    icon: <EditIcon />,
     route: '/member/update',
   },
   {
     text: 'Update Member Password',
-    icon: <MenuBookIcon />,
+    icon: <PasswordIcon />,
     route: '/member/updatepassword',
   },
   {
     text: 'Search Books',
-    icon: <AccountCircleIcon />,
+    icon: <SearchIcon />,
     route: '/book/all',
   },
   {
     text: 'View Issued Books',
-    icon: <AccountCircleIcon />,
+    icon: <BookmarkAddedIcon />,
     route: '/book/issued',
   },
   {
     text: 'View Returned Books',
-    icon: <AccountCircleIcon />,
+    icon: <BookmarkRemoveIcon />,
     route: '/book/returned',
   },
 ];
@@ -311,7 +316,11 @@ export default function MiniDrawer() {
   return (
     <Box>
       <CssBaseline />
-      <AppBar style={{ background: '#1769aa' }} position="fixed" open={open}>
+      <AppBar
+        style={{ background: 'rgb(252, 115, 0)' }}
+        position="fixed"
+        open={open}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -331,9 +340,8 @@ export default function MiniDrawer() {
           <Box sx={{ marginLeft: 'auto' }}>
             <Button
               type="submit"
-              variant="contained"
               onClick={logoutHandler}
-              sx={{ marginLeft: '15px' }}
+              sx={{ marginLeft: '15px', color: '#fff' }}
             >
               LOGOUT
             </Button>

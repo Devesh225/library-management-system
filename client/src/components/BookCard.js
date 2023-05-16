@@ -35,11 +35,18 @@ const BookCard = ({ book }) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 350 }}>
+    <Card
+      sx={{
+        maxWidth: 350,
+        backgroundColor: 'orange',
+        borderRadius: '5%',
+        border: '5px solid orange',
+      }}
+    >
       <CardActionArea>
         <CardMedia
           component="img"
-          height="140"
+          height="200"
           image={book?.book_cover?.url}
           alt={book?.book_title}
         />

@@ -37,7 +37,7 @@ export const createSubscription = catchAsyncError(async (req, res, next) => {
 
     await organisation.save();
 
-    res.status(201).json({
+    return res.status(201).json({
         success: true,
         subscriptionID: subscription.id,
     });
@@ -80,7 +80,7 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
 });
 
 export const getRazorpayKey = catchAsyncError(async (req, res, next) => {
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         key: process.env.RAZORPAY_API_KEY,
     });
@@ -112,7 +112,7 @@ export const cancelSubscription = catchAsyncError(async (req, res, next) => {
 
     await organisation.save();
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: refund
             ? "SUBSCRIPTION CANCELLED. YOU WILL GET THE REFUND WITHIN 7 BUSINESS DAYS."

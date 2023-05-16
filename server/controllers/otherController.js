@@ -11,7 +11,7 @@ export const contact = catchAsyncError(async (req, res, next) => {
     const subject = "Query From Libraly";
     const msg = `User: ${name} \n Email: ${email} \n ${message}`;
     await sendEmail(to, subject, msg);
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "MAIL SENT SUCCESSFULLY",
     });

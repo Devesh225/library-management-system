@@ -47,7 +47,8 @@ export const memberLogin = catchAsyncError(async (req, res, next) => {
 });
 
 export const memberLogout = catchAsyncError(async (req, res, next) => {
-    res.status(200)
+    return res
+        .status(200)
         .cookie("token", null, {
             expires: new Date(Date.now()),
             httpOnly: true,
@@ -63,14 +64,14 @@ export const memberLogout = catchAsyncError(async (req, res, next) => {
 export const getMemberProfile = catchAsyncError(async (req, res, next) => {
     let member = null;
     if (!req.member) {
-        res.status(200).json({
+        return res.status(200).json({
             success: false,
         });
     } else {
         member = await userModel.findById(req.member._id);
     }
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         member,
     });
@@ -106,7 +107,7 @@ export const updateMemberPassword = catchAsyncError(async (req, res, next) => {
 
     await member.save();
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "PASSWORD UPDATED SUCCESSFULLY.",
     });
@@ -153,7 +154,7 @@ export const updateMemberProfile = catchAsyncError(async (req, res, next) => {
 
     await member.save();
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "PROFILE UPDATED SUCCESSFULLY.",
         member,
@@ -187,7 +188,7 @@ export const memberForgotPassword = catchAsyncError(async (req, res, next) => {
 
     await sendEmail(email, subject, message);
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: `RESET TOKEN HAS BEEN SENT TO ${email}`,
     });
@@ -220,7 +221,7 @@ export const memberResetPassword = catchAsyncError(async (req, res, next) => {
 
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "PASSWORD CHANGED SUCCESSFULLY.",
     });

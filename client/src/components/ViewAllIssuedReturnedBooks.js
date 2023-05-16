@@ -5,6 +5,7 @@ import {
   viewAllReturnedBooks,
 } from '../redux/actions/bookAction';
 import IssueBookCard from './IssueBookCard';
+import './Register.css';
 
 const ViewAllIssuedReturnedBooks = ({ issued, returned }) => {
   const dispatch = useDispatch();
@@ -21,30 +22,35 @@ const ViewAllIssuedReturnedBooks = ({ issued, returned }) => {
     }
   }, [dispatch, issued, returned, borrowedBook]);
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-evenly',
-        marginTop: '8%',
-      }}
-    >
-      {issued
-        ? issuedBooks &&
-          issuedBooks.map((book, index) => (
-            <IssueBookCard
-              issueDetails={book}
-              bookDetails={books[index]}
-              key={book._id}
-            />
-          ))
-        : returnedBooks &&
-          returnedBooks.map((book, index) => (
-            <IssueBookCard
-              issueDetails={book}
-              bookDetails={books[index]}
-              key={book._id}
-            />
-          ))}
+    <div className="register__main" style={{ height: '50rem' }}>
+      <div
+        style={{
+          display: 'grid',
+          marginTop: '8%',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          marginBottom: '5rem',
+          rowGap: '5rem',
+          marginLeft: '10rem',
+        }}
+      >
+        {issued
+          ? issuedBooks &&
+            issuedBooks.map((book, index) => (
+              <IssueBookCard
+                issueDetails={book}
+                bookDetails={books[index]}
+                key={book._id}
+              />
+            ))
+          : returnedBooks &&
+            returnedBooks.map((book, index) => (
+              <IssueBookCard
+                issueDetails={book}
+                bookDetails={books[index]}
+                key={book._id}
+              />
+            ))}
+      </div>
     </div>
   );
 };

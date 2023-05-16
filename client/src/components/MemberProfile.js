@@ -1,12 +1,13 @@
 import React from 'react';
 import { Typography, Box, Avatar } from '@mui/material';
 import { useSelector } from 'react-redux';
+import './Register.css';
 
 const MemberProfile = () => {
   const { member } = useSelector(state => state.member);
 
   return (
-    <div>
+    <div className="register__main">
       <Box
         sx={{
           margin: '6%',
@@ -17,31 +18,70 @@ const MemberProfile = () => {
         }}
       >
         <Avatar
-          sx={{ height: 150, width: 150, marginBottom: '15px' }}
+          sx={{ height: 200, width: 200, marginBottom: '15px' }}
           alt="Avatar"
           src={member?.user_avatar?.url}
         />
-        <Typography sx={{ marginBottom: '15px' }}>
-          ORGANISATION ID: {member?.organisation_id}
-        </Typography>
-        <Typography sx={{ marginBottom: '15px' }}>
-          ORGANISATION NAME: {member?.organisation_name}
-        </Typography>
-        <Typography sx={{ marginBottom: '15px' }}>
-          MEMBER ID: {member?.user_id}
-        </Typography>
-        <Typography sx={{ marginBottom: '15px' }}>
-          MEMBER NAME: {member?.user_name}
-        </Typography>
-        <Typography sx={{ marginBottom: '15px' }}>
-          MEMBER EMAIL: {member?.user_email}
-        </Typography>
-        <Typography sx={{ marginBottom: '15px' }}>
-          MEMBER PHONE: {member?.user_phone}
-        </Typography>
-        <Typography sx={{ marginBottom: '15px' }}>
-          MEMBER DOB : {member?.user_dob}
-        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            margin: '6%',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-evenly',
+              marginBottom: '5rem',
+              marginRight: '3rem',
+              height: '80vh',
+            }}
+          >
+            <Box sx={{ backgroundColor: 'orange', padding: '3rem' }}>
+              <Typography sx={{ fontSize: '1.5rem' }}>
+                ORGANISATION ID: {member?.organisation_id}
+              </Typography>
+            </Box>
+            <Box sx={{ backgroundColor: 'orange', padding: '3rem' }}>
+              <Typography sx={{ fontSize: '1.5rem' }}>
+                ORGANISATION NAME: {member?.organisation_name}
+              </Typography>
+            </Box>
+            <Box sx={{ backgroundColor: 'orange', padding: '3rem' }}>
+              <Typography sx={{ fontSize: '1.5rem' }}>
+                MEMBER ID: {member?.user_id}
+              </Typography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              flexDirection: 'column',
+              marginBottom: '5rem',
+              height: '80vh',
+            }}
+          >
+            <Box sx={{ backgroundColor: 'orange', padding: '3rem' }}>
+              <Typography sx={{ fontSize: '1.5rem' }}>
+                MEMBER NAME: {member?.user_name}
+              </Typography>
+            </Box>
+            <Box sx={{ backgroundColor: 'orange', padding: '3rem' }}>
+              <Typography sx={{ fontSize: '1.5rem' }}>
+                MEMBER EMAIL: {member?.user_email}
+              </Typography>
+            </Box>
+            <Box sx={{ backgroundColor: 'orange', padding: '3rem' }}>
+              <Typography sx={{ fontSize: '1.5rem' }}>
+                MEMBER PHONE: {member?.user_phone}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </div>
   );

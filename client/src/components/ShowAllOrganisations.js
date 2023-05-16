@@ -37,59 +37,65 @@ const ShowAllOrganisations = () => {
   };
 
   return (
-    <div style={{ margin: 'auto', width: '80%', marginTop: '8%' }}>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Member ID</TableCell>
-              <TableCell align="right">Name</TableCell>
-              <TableCell align="right">Email</TableCell>
-              <TableCell align="right">Phone</TableCell>
-              <TableCell align="right">Subscription</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {organisations &&
-              organisations.map(row => (
-                <TableRow
-                  key={row._id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.organisation_id}
-                  </TableCell>
-                  <TableCell align="right">{row.organisation_name}</TableCell>
-                  <TableCell align="right">{row.organisation_email}</TableCell>
-                  <TableCell align="right">{row.organisation_phone}</TableCell>
-                  <TableCell align="right">
-                    {row.organisation_subscription?.status
-                      ? 'ACTIVE'
-                      : 'INACTIVE'}
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      aria-label="delete"
-                      onClick={editOrganisationHandler}
-                      id={row._id}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    &nbsp;&nbsp;
-                    <IconButton
-                      aria-label="delete"
-                      onClick={deleteOrganisationHandler}
-                      id={row._id}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <div className="register__main" style={{ height: '50rem' }}>
+      <div style={{ margin: 'auto', width: '80%', marginTop: '8%' }}>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Member ID</TableCell>
+                <TableCell align="right">Name</TableCell>
+                <TableCell align="right">Email</TableCell>
+                <TableCell align="right">Phone</TableCell>
+                <TableCell align="right">Subscription</TableCell>
+                <TableCell align="right">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {organisations &&
+                organisations.map(row => (
+                  <TableRow
+                    key={row._id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.organisation_id}
+                    </TableCell>
+                    <TableCell align="right">{row.organisation_name}</TableCell>
+                    <TableCell align="right">
+                      {row.organisation_email}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.organisation_phone}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.organisation_subscription?.status
+                        ? 'ACTIVE'
+                        : 'INACTIVE'}
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        aria-label="delete"
+                        onClick={editOrganisationHandler}
+                        id={row._id}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      &nbsp;&nbsp;
+                      <IconButton
+                        aria-label="delete"
+                        onClick={deleteOrganisationHandler}
+                        id={row._id}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
   );
 };

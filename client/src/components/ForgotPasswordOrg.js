@@ -58,7 +58,7 @@ const ForgotPasswordOrg = () => {
   };
 
   return (
-    <div className="register__main">
+    <div className="register__main" style={{ height: '50rem' }}>
       <div className="signup-container">
         <ThemeProvider theme={theme}>
           <Container component="main">

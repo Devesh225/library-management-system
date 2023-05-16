@@ -1,6 +1,6 @@
 .register__main {
     background-image: url("../assets/bg-signup.jpg");
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(1px);
     height: auto;
     display: flex;
     flex-direction: column;

@@ -8,7 +8,7 @@ import LoginOrg from './components/LoginOrg';
 import LoginUser from './components/LoginUser';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { organisationLoadUser } from './redux/actions/organisationAction';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import MemberSideBar from './components/MemberSideBar.js';
@@ -69,6 +69,8 @@ function App() {
 
   const dispatch = useDispatch();
 
+  const [redirectLink, setRedirectLink] = useState('');
+
   useEffect(() => {
     if (organisationError && organisationError !== 'USER NOT LOGGED IN.') {
       toast.error(organisationError);
@@ -119,6 +121,14 @@ function App() {
     dispatch(memberLoadUser());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (member) {
+      setRedirectLink('/userlogin');
+    } else if (organisation) {
+      setRedirectLink('/organisationlogin');
+    }
+  }, [member, organisation]);
+
   return (
     <BrowserRouter>
       {organisationLoading && memberLoading ? (
@@ -139,9 +149,9 @@ function App() {
               element={
                 <ProtectedRoute
                   isAuthenticated={
-                    organisationIsAuthenticated || memberIsAuthenticated
+                    !organisationIsAuthenticated || !memberIsAuthenticated
                   }
-                  redirect="/organisationlogin"
+                  redirect={redirectLink}
                 >
                   <Home />
                 </ProtectedRoute>
