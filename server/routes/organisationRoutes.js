@@ -23,6 +23,13 @@ import {
 } from "../controllers/organisationController.js";
 import { authorizedSubscribers, isAuthenticated } from "../middlewares/auth.js";
 import singleFileUpload from "../middlewares/multer.js";
+import {
+    issueBookAdmin,
+    issueRequestAdmin,
+    rejectRequestBook,
+    returnBookAdmin,
+    returnRequestAdmin,
+} from "../controllers/bookController.js";
 
 const router = express.Router();
 
@@ -95,5 +102,21 @@ router
 router
     .route("/organisation/totalmembers")
     .get(isAuthenticated, getTotalMembersSuperAdmin);
+
+router.route("/organisation/allissue").get(isAuthenticated, issueRequestAdmin);
+router
+    .route("/organisation/issueconfirmation")
+    .post(isAuthenticated, issueBookAdmin);
+
+router
+    .route("/organisation/allreturn")
+    .get(isAuthenticated, returnRequestAdmin);
+router
+    .route("/organisation/returnconfirmation")
+    .post(isAuthenticated, returnBookAdmin);
+
+router
+    .route("/organisation/rejectrequest")
+    .post(isAuthenticated, rejectRequestBook);
 
 export default router;

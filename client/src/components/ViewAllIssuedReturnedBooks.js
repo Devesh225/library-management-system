@@ -10,9 +10,14 @@ import './Register.css';
 
 const ViewAllIssuedReturnedBooks = ({ issued, returned }) => {
   const dispatch = useDispatch();
-  const { issuedBooks, books, returnedBooks, borrowedBook } = useSelector(
-    state => state.book
-  );
+  const {
+    issuedBooks,
+    books,
+    returnedBooks,
+    borrowedBook,
+    requestedIssueBooks,
+    requestedReturnBooks,
+  } = useSelector(state => state.book);
 
   useEffect(() => {
     if (issued) {
@@ -21,7 +26,14 @@ const ViewAllIssuedReturnedBooks = ({ issued, returned }) => {
     if (returned) {
       dispatch(viewAllReturnedBooks());
     }
-  }, [dispatch, issued, returned, borrowedBook]);
+  }, [
+    dispatch,
+    issued,
+    returned,
+    borrowedBook,
+    requestedIssueBooks,
+    requestedReturnBooks,
+  ]);
   return (
     <div
       className="register__main"
@@ -48,6 +60,22 @@ const ViewAllIssuedReturnedBooks = ({ issued, returned }) => {
           marginLeft: '10rem',
         }}
       >
+        {requestedIssueBooks &&
+          requestedIssueBooks.map(book => (
+            <IssueBookCard
+              requestedBook={true}
+              bookDetails={book}
+              key={book._id}
+            />
+          ))}
+        {requestedReturnBooks &&
+          requestedReturnBooks.map(book => (
+            <IssueBookCard
+              requestedBook={true}
+              bookDetails={book}
+              key={book._id}
+            />
+          ))}
         {issued
           ? issuedBooks &&
             issuedBooks.map((book, index) => (

@@ -2,9 +2,12 @@ import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import { bookModel } from "../models/bookModel.js";
 import { borrowedBooksModel } from "../models/borrowedBookModel.js";
 import { organisationModel } from "../models/organisationModel.js";
+import { requestModel } from "../models/requestModel.js";
 import { userModel } from "../models/userModel.js";
+import getDataURI from "../utils/dataURI.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import cloudinary from "cloudinary";
 
 export const getAllBooksAdmin = catchAsyncError(async (req, res, next) => {
     // const name = req.query.name || "";
@@ -136,6 +139,105 @@ export const addBookAdmin = catchAsyncError(async (req, res, next) => {
     });
 });
 
+export const issueRequestAdmin = catchAsyncError(async (req, res, next) => {
+    const requests = await requestModel.find({
+        requestType: "ISSUE",
+    });
+    return res.status(200).json({
+        success: true,
+        requests,
+    });
+});
+
+export const returnRequestAdmin = catchAsyncError(async (req, res, next) => {
+    const requests = await requestModel.find({
+        requestType: "RETURN",
+    });
+    return res.status(200).json({
+        success: true,
+        requests,
+    });
+});
+
+export const issueBookAdmin = catchAsyncError(async (req, res, next) => {
+    const { id } = req.body;
+    const orgID = req.organisation._id;
+    let request = await requestModel.findById(id);
+    const organisation = await organisationModel.findById(orgID);
+    const organisation_id = organisation.organisation_id;
+    const book_isbn = request.book_isbn;
+    const user_id = request.member_id;
+    let book = await bookModel.find({
+        organisation_id,
+        book_isbn,
+    });
+    book = book[0];
+    let member = await userModel.find({
+        organisation_id,
+        user_id,
+    });
+    member = member[0];
+    if (book.book_available_copies > 1) {
+        const borrowedBook = await borrowedBooksModel.create({
+            borrowedBook_user_id: member._id,
+            borrowedBook_book_id: book._id,
+            borrowedBook_borrowed_date: Date.now(),
+            borrowedBook_due_date: Date.now() + 15 * 24 * 60 * 60 * 1000,
+        });
+        if (!borrowedBook) {
+            return next(
+                new ErrorHandler("COULDN'T ISSUE BOOK, PLEASE TRY AGAIN", 400)
+            );
+        }
+        book.book_available_copies = book.book_available_copies - 1;
+        if (book.book_waiting_queue > 0) {
+            book.book_waiting_queue = book.book_waiting_queue - 1;
+        }
+        book.save();
+
+        let issueDate = borrowedBook.borrowedBook_borrowed_date;
+        let returnDate = borrowedBook.borrowedBook_due_date;
+        let subject = "[ LIBRALY ] BOOK ISSUED.";
+
+        let message = `You have issued a book: ${
+            book.book_title
+        }.\n\nIssue Date: ${String(issueDate).substring(
+            0,
+            15
+        )}\n\nMax Return Date: ${String(returnDate).substring(0, 15)}`;
+
+        await sendEmail(member.user_email, subject, message);
+
+        //
+        request = await requestModel.findOneAndUpdate(
+            {
+                _id: id,
+            },
+            {
+                requestType: "APPROVED",
+            },
+            { new: true }
+        );
+        request.save();
+        //
+
+        return res.status(200).json({
+            success: true,
+            message: "BOOK ISSUED SUCCESSFULLY.",
+            borrowedBook,
+        });
+    } else {
+        book.book_waiting_queue = book.book_waiting_queue + 1;
+        book.save();
+        return next(
+            new ErrorHandler(
+                "THIS BOOK IS NOT AVAILABLE CURRENTLY, YOU WILL BE ADDED TO THE WAITING QUEUE.",
+                400
+            )
+        );
+    }
+});
+
 export const issueBook = catchAsyncError(async (req, res, next) => {
     const memberID = req.member._id;
     const member = await userModel.findById(memberID);
@@ -169,76 +271,54 @@ export const issueBook = catchAsyncError(async (req, res, next) => {
     }
 
     if (book.book_available_copies > 1) {
-        const borrowedBook = await borrowedBooksModel.create({
-            borrowedBook_user_id: memberID,
-            borrowedBook_book_id: book._id,
-            borrowedBook_borrowed_date: Date.now(),
-            borrowedBook_due_date: Date.now() + 15 * 24 * 60 * 60 * 1000,
+        const request = await requestModel.create({
+            member_id: member.user_id,
+            book_isbn: book.book_isbn,
+            member_name: member.user_name,
+            book_name: book.book_title,
+            book_available_copies: book.book_available_copies,
+            requestType: "ISSUE",
         });
-        if (!borrowedBook) {
+
+        if (!request) {
             return next(
-                new ErrorHandler("COULDN'T ISSUE BOOK, PLEASE TRY AGAIN", 400)
+                new ErrorHandler(
+                    "COULDN'T ISSUE REQUEST, PLEASE TRY AGAIN",
+                    400
+                )
             );
         }
-        book.book_available_copies = book.book_available_copies - 1;
-        if (book.book_waiting_queue > 0) {
-            book.book_waiting_queue = book.book_waiting_queue - 1;
-        }
-        book.save();
-
-        let issueDate = borrowedBook.borrowedBook_borrowed_date;
-        let returnDate = borrowedBook.borrowedBook_due_date;
-        let subject = "[ LIBRALY ] BOOK ISSUED.";
-
-        let message = `You have issued a book: ${
-            book.book_title
-        }.\n\nIssue Date: ${String(issueDate).substring(
-            0,
-            15
-        )}\n\nMax Return Date: ${String(returnDate).substring(0, 15)}`;
-
-        await sendEmail(member.user_email, subject, message);
 
         return res.status(200).json({
             success: true,
-            message: "BOOK ISSUED SUCCESSFULLY.",
-            borrowedBook,
+            message: "ISSUE REQUEST SUCCESSFUL",
         });
-    } else {
-        book.book_waiting_queue = book.book_waiting_queue + 1;
-        book.save();
-        return next(
-            new ErrorHandler(
-                "THIS BOOK IS NOT AVAILABLE CURRENTLY, YOU WILL BE ADDED TO THE WAITING QUEUE.",
-                400
-            )
-        );
     }
 });
 
-export const returnBook = catchAsyncError(async (req, res, next) => {
-    const memberID = req.member._id;
-    const member = await userModel.findById(memberID);
-    const { bookID } = req.body;
-    if (!bookID) {
-        return next(new ErrorHandler("PLEASE SELECT THE BOOK CORRECTLY.", 400));
-    }
-
-    let book = await bookModel.findById(bookID);
-    if (!book) {
-        return next(new ErrorHandler("PLEASE TRY AGAIN.", 400));
-    }
-    let borrowedBook = await borrowedBooksModel.find({
-        borrowedBook_book_id: bookID,
-        borrowedBook_user_id: memberID,
+export const returnBookAdmin = catchAsyncError(async (req, res, next) => {
+    const { id } = req.body;
+    const orgID = req.organisation._id;
+    let request = await requestModel.findById(id);
+    const organisation = await organisationModel.findById(orgID);
+    const organisation_id = organisation.organisation_id;
+    const book_isbn = request.book_isbn;
+    const user_id = request.member_id;
+    let book = await bookModel.find({
+        organisation_id,
+        book_isbn,
     });
-    if (borrowedBook.borrowedBook_is_returned) {
-        return next(new ErrorHandler("BOOK HAS ALREADY BEEN RETURNED.", 400));
-    }
-    borrowedBook = await borrowedBooksModel.findOneAndUpdate(
+    book = book[0];
+
+    let member = await userModel.find({
+        organisation_id,
+        user_id,
+    });
+    member = member[0];
+    const borrowedBook = await borrowedBooksModel.findOneAndUpdate(
         {
-            borrowedBook_book_id: bookID,
-            borrowedBook_user_id: memberID,
+            borrowedBook_book_id: book._id,
+            borrowedBook_user_id: member._id,
         },
         {
             borrowedBook_returned_date: Date.now(),
@@ -248,6 +328,7 @@ export const returnBook = catchAsyncError(async (req, res, next) => {
     );
     book.book_available_copies = book.book_available_copies + 1;
     book.save();
+    borrowedBook.save();
     let lateDays = 0;
     if (
         borrowedBook.borrowedBook_returned_date >
@@ -276,11 +357,82 @@ export const returnBook = catchAsyncError(async (req, res, next) => {
     )}\n\nLate Fine: Rs. ${lateFine}`;
 
     await sendEmail(member.user_email, subject, message);
+
+    request = await requestModel.findOneAndUpdate(
+        {
+            _id: id,
+        },
+        {
+            requestType: "APPROVED",
+        },
+        { new: true }
+    );
+
+    request.save();
     return res.status(200).json({
         success: true,
         lateFine,
         message: "BOOK RETURNED SUCCESSFULLY.",
         borrowedBook,
+    });
+});
+
+export const rejectRequestBook = catchAsyncError(async (req, res, next) => {
+    const { id } = req.body;
+    const request = await requestModel.findOneAndUpdate(
+        {
+            _id: id,
+        },
+        {
+            requestType: "REJECTED",
+        },
+        { new: true }
+    );
+    request.save();
+    res.status(200).json({
+        success: true,
+        message: "REJECTED REQUEST SUCCESSFULLY",
+    });
+});
+
+export const returnBook = catchAsyncError(async (req, res, next) => {
+    const memberID = req.member._id;
+    const member = await userModel.findById(memberID);
+    const { bookID } = req.body;
+    if (!bookID) {
+        return next(new ErrorHandler("PLEASE SELECT THE BOOK CORRECTLY.", 400));
+    }
+
+    let book = await bookModel.findById(bookID);
+    if (!book) {
+        return next(new ErrorHandler("PLEASE TRY AGAIN.", 400));
+    }
+    let borrowedBook = await borrowedBooksModel.find({
+        borrowedBook_book_id: bookID,
+        borrowedBook_user_id: memberID,
+    });
+    if (borrowedBook.borrowedBook_is_returned) {
+        return next(new ErrorHandler("BOOK HAS ALREADY BEEN RETURNED.", 400));
+    }
+
+    const request = await requestModel.create({
+        member_id: member.user_id,
+        book_isbn: book.book_isbn,
+        member_name: member.user_name,
+        book_name: book.book_title,
+        book_available_copies: book.book_available_copies,
+        requestType: "RETURN",
+    });
+
+    if (!request) {
+        return next(
+            new ErrorHandler("COULDN'T ISSUE REQUEST, PLEASE TRY AGAIN", 400)
+        );
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "RETURN REQUEST SUCCESSFUL",
     });
 });
 
@@ -302,10 +454,30 @@ export const viewCurrentlyIssuedBooks = catchAsyncError(
             books.push(book);
         }
 
+        const requests = await requestModel.find({
+            requestType: "ISSUE",
+        });
+
+        let requestedIssueBooksISBN = [];
+
+        requests.map((request) => {
+            requestedIssueBooksISBN.push(request.book_isbn);
+        });
+        let requestedIssueBooks = [];
+        for (const pendingID of requestedIssueBooksISBN) {
+            const book = await bookModel.find({
+                book_isbn: pendingID,
+            });
+            requestedIssueBooks.push(book);
+        }
+
+        requestedIssueBooks = requestedIssueBooks[0];
+
         return res.status(200).json({
             success: true,
             books,
             issuedBooks,
+            requestedIssueBooks,
         });
     }
 );
@@ -328,10 +500,31 @@ export const viewReturnedBooksHistory = catchAsyncError(
             const book = await bookModel.findById(id);
             books.push(book);
         }
+
+        const requests = await requestModel.find({
+            requestType: "RETURN",
+        });
+
+        let requestedReturnBooksISBN = [];
+
+        requests.map((request) => {
+            requestedReturnBooksISBN.push(request.book_isbn);
+        });
+        let requestedReturnBooks = [];
+        for (const pendingID of requestedReturnBooksISBN) {
+            const book = await bookModel.find({
+                book_isbn: pendingID,
+            });
+            requestedReturnBooks.push(book);
+        }
+
+        requestedReturnBooks = requestedReturnBooks[0];
+
         return res.status(200).json({
             success: true,
             books,
             returnedBooks,
+            requestedReturnBooks,
         });
     }
 );

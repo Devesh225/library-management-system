@@ -51,7 +51,7 @@ const ShowAllBooks = () => {
   const [keyword, setKeyword] = useState('');
   useEffect(() => {
     dispatch(showAllBooks(keyword));
-  }, [dispatch, keyword]);
+  }, [dispatch, keyword, books]);
   return (
     <div
       className="register__main"

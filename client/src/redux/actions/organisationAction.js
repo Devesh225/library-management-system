@@ -425,3 +425,105 @@ export const getAllMembersSuperAdmin = () => async dispatch => {
     });
   }
 };
+
+export const getAllIssueRequestsAdmin = () => async dispatch => {
+  try {
+    dispatch({ type: 'allIssueRequest' });
+
+    const { data } = await axios.get(`${server}/organisation/allissue`, {
+      headers: { 'Content-type': 'application/json' },
+      withCredentials: true,
+    });
+
+    dispatch({ type: 'allIssueSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'allIssueFailure',
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const issueBookConfirmation = id => async dispatch => {
+  try {
+    dispatch({ type: 'issueBookConfirmationRequest' });
+
+    const { data } = await axios.post(
+      `${server}/organisation/issueconfirmation`,
+      { id },
+      {
+        headers: { 'Content-type': 'application/json' },
+        withCredentials: true,
+      }
+    );
+
+    dispatch({ type: 'issueBookConfirmationSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'issueBookConfirmationFailure',
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getAllReturnRequestsAdmin = () => async dispatch => {
+  try {
+    dispatch({ type: 'allReturnRequest' });
+
+    const { data } = await axios.get(`${server}/organisation/allreturn`, {
+      headers: { 'Content-type': 'application/json' },
+      withCredentials: true,
+    });
+
+    dispatch({ type: 'allReturnSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'allReturnFailure',
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const returnBookConfirmation = id => async dispatch => {
+  try {
+    dispatch({ type: 'returnBookConfirmationRequest' });
+
+    const { data } = await axios.post(
+      `${server}/organisation/returnconfirmation`,
+      { id },
+      {
+        headers: { 'Content-type': 'application/json' },
+        withCredentials: true,
+      }
+    );
+
+    dispatch({ type: 'returnBookConfirmationSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'returnBookConfirmationFailure',
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const rejectRequestAdmin = id => async dispatch => {
+  try {
+    dispatch({ type: 'rejectRequestRequest' });
+
+    const { data } = await axios.post(
+      `${server}/organisation/rejectrequest`,
+      { id },
+      {
+        headers: { 'Content-type': 'application/json' },
+        withCredentials: true,
+      }
+    );
+
+    dispatch({ type: 'rejectRequestSuccess', payload: data });
+  } catch (error) {
+    dispatch({
+      type: 'rejectRequestFailure',
+      payload: error.response.data.message,
+    });
+  }
+};

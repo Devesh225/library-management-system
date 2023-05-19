@@ -58,8 +58,8 @@ const ResetPasswordOrg = () => {
   };
 
   return (
-    <div className="register__main">
-      <div className="signup-container">
+    <div className="register__main" style={{ height: '50rem' }}>
+      <div className="signup-container" style={{ marginTop: '15rem' }}>
         <ThemeProvider theme={theme}>
           <Container component="main">
             <CssBaseline />

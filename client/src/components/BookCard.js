@@ -110,7 +110,12 @@ const BookCard = ({ book }) => {
             </Button>
           </Grid>
         ) : book?.book_available_copies === 1 ? (
-          <Button onClick={issueBookHandler} size="small" color="primary">
+          <Button
+            onClick={issueBookHandler}
+            size="small"
+            color="primary"
+            variant="contained"
+          >
             ADD TO WAITLIST
           </Button>
         ) : (
@@ -119,6 +124,7 @@ const BookCard = ({ book }) => {
             size="small"
             color="primary"
             variant="contained"
+            sx={{ marginTop: '1.25rem' }}
           >
             ISSUE BOOK
           </Button>

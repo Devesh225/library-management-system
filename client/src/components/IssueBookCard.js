@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { issueBook, returnBook } from '../redux/actions/bookAction';
 
-const IssueBookCard = ({ issueDetails, bookDetails }) => {
+const IssueBookCard = ({ issueDetails, bookDetails, requestedBook }) => {
   const { loading } = useSelector(state => state.book);
   React.useEffect(() => {
     if (!loading) {
@@ -60,11 +60,13 @@ const IssueBookCard = ({ issueDetails, bookDetails }) => {
           <Typography variant="body2" color="text.secondary">
             Number of Pages: {bookDetails?.book_number_of_pages}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Issue Date:{' '}
-            {(issueDetails?.borrowedBook_borrowed_date).substring(0, 10)}
-          </Typography>
-          {issueDetails?.borrowedBook_is_returned ? (
+          {requestedBook ? null : (
+            <Typography variant="body2" color="text.secondary">
+              Issue Date:{' '}
+              {(issueDetails?.borrowedBook_borrowed_date).substring(0, 10)}
+            </Typography>
+          )}
+          {requestedBook ? null : issueDetails?.borrowedBook_is_returned ? (
             <Typography variant="body2" color="text.secondary">
               Returned Date:{' '}
               {(issueDetails?.borrowedBook_returned_date).substring(0, 10)}
@@ -78,7 +80,20 @@ const IssueBookCard = ({ issueDetails, bookDetails }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        {issueDetails?.borrowedBook_is_returned ? (
+        {requestedBook ? (
+          <Button
+            size="small"
+            variant="contained"
+            disabled
+            sx={{
+              marginTop: '2.5rem',
+              backgroundColor: 'gray !important;',
+              color: '#fff !important;',
+            }}
+          >
+            REQUESTED
+          </Button>
+        ) : issueDetails?.borrowedBook_is_returned ? (
           <Button
             onClick={reissueBookHandler}
             size="small"

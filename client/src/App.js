@@ -42,6 +42,8 @@ import CreateNewOrganisationSuperAdmin from './components/CreateNewOrganisationS
 import AccessRestricted from './components/AccessRestricted';
 import Dashboard from './components/Dashboard';
 import Contact from './components/Contact';
+import IssueRequestsAdmin from './components/IssueRequestsAdmin';
+import ReturnRequestsAdmin from './components/ReturnRequestsAdmin';
 
 function App() {
   const {
@@ -198,6 +200,34 @@ function App() {
                   redirect="/organisation/me"
                 >
                   <LoginOrg />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/organisation/issuerequests"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status === 'active'
+                  }
+                  redirect="/organisation/restricted"
+                >
+                  <IssueRequestsAdmin />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/organisation/returnrequests"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={
+                    organisation?.organisation_subscription?.status === 'active'
+                  }
+                  redirect="/organisation/restricted"
+                >
+                  <ReturnRequestsAdmin />
                 </ProtectedRoute>
               }
             />

@@ -23,25 +23,27 @@ const DeleteBookAdmin = () => {
     navigate(`/organisation/books`);
   };
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <DeleteBookCard book={selectedBook} />
-      <Typography sx={{ marginTop: '1rem' }}>
-        This Book Will Be Deleted.
-      </Typography>
-      <Button
-        sx={{ marginTop: '1rem', marginBottom: '1rem' }}
-        onClick={deleteBookHandler}
-        variant="contained"
+    <div style={{ marginTop: '8%' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
       >
-        CONFIRM
-      </Button>
+        <DeleteBookCard book={selectedBook} />
+        <Typography sx={{ marginTop: '1rem' }}>
+          This Book Will Be Deleted.
+        </Typography>
+        <Button
+          sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+          onClick={deleteBookHandler}
+          variant="contained"
+        >
+          CONFIRM
+        </Button>
+      </div>
     </div>
   );
 };

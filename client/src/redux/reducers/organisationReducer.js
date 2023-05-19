@@ -261,6 +261,63 @@ export const organisationReducer = createReducer(
       state.loading = false;
       state.error = action.payload;
     },
+    allIssueRequest: state => {
+      state.loading = true;
+    },
+    allIssueSuccess: (state, action) => {
+      state.loading = false;
+      state.requests = action.payload.requests;
+    },
+    allIssueFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    issueBookConfirmationRequest: state => {
+      state.loading = true;
+    },
+    issueBookConfirmationSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+      state.borrowedBook = action.payload.borrowedBook;
+    },
+    issueBookConfirmationFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    allReturnRequest: state => {
+      state.loading = true;
+    },
+    allReturnSuccess: (state, action) => {
+      state.loading = false;
+      state.requests = action.payload.requests;
+    },
+    allReturnFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    returnBookConfirmationRequest: state => {
+      state.loading = true;
+    },
+    returnBookConfirmationSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+      state.borrowedBook = action.payload.borrowedBook;
+    },
+    returnBookConfirmationFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    rejectRequestRequest: state => {
+      state.loading = true;
+    },
+    rejectRequestSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+    },
+    rejectRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     clearError: state => {
       state.error = null;
     },

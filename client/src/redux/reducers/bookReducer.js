@@ -21,6 +21,7 @@ export const bookReducer = createReducer(
       state.loading = false;
       state.issuedBooks = action.payload.issuedBooks;
       state.books = action.payload.books;
+      state.requestedIssueBooks = action.payload.requestedIssueBooks;
     },
     viewAllIssuedBooksFailure: (state, action) => {
       state.loading = false;
@@ -33,6 +34,7 @@ export const bookReducer = createReducer(
       state.loading = false;
       state.returnedBooks = action.payload.returnedBooks;
       state.books = action.payload.books;
+      state.requestedReturnBooks = action.payload.requestedReturnBooks;
     },
     viewAllReturnedBooksFailure: (state, action) => {
       state.loading = false;

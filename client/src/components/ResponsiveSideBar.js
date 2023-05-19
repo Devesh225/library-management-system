@@ -121,6 +121,8 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 
 import { organisationLogout } from '../redux/actions/organisationAction';
 import { useDispatch, useSelector } from 'react-redux';
@@ -232,6 +234,16 @@ const NavList = [
     text: 'Add New Book',
     icon: <BookIcon />,
     route: '/organisation/book/add',
+  },
+  {
+    text: 'Issue Requests',
+    icon: <AssignmentTurnedInIcon />,
+    route: '/organisation/issuerequests',
+  },
+  {
+    text: 'Return Requests',
+    icon: <AssignmentReturnIcon />,
+    route: '/organisation/returnrequests',
   },
 ];
 

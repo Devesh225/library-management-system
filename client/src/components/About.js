@@ -4,7 +4,7 @@ import React from 'react';
 import medhaAvatar from '../assets/medha.jpg';
 import deveshAvatar from '../assets/devesh.jpg';
 import binayakAvatar from '../assets/binayak.jpeg';
-import nabarunAvatar from '../assets/binayak.jpeg';
+import nabarunAvatar from '../assets/nabarun.jpeg';
 import abhinavAvatar from '../assets/abhinav.jpeg';
 import AboutAvatar from './AboutAvatar';
 
